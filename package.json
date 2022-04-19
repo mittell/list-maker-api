@@ -1,0 +1,24 @@
+{
+	"name": "list-maker-api",
+	"version": "1.0.0",
+	"description": "List Maker API",
+	"main": "server.js",
+	"scripts": {
+		"setup": "npm install && npx husky install"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/mittell/list-maker-api.git"
+	},
+	"author": "Chris Mittell",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/mittell/list-maker-api/issues"
+	},
+	"homepage": "https://github.com/mittell/list-maker-api#readme",
+	"devDependencies": {
+		"@commitlint/cli": "^16.2.3",
+		"@commitlint/config-conventional": "^16.2.1",
+		"husky": "^7.0.4"
+	}
+}
