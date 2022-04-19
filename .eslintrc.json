@@ -6,11 +6,11 @@
 	},
 	"extends": [
 		//"airbnb-base"
-		"plugin:@typescript-eslint/recommended"
+		"plugin:@typescript-eslint/recommended",
 		// "plugin:mocha/recommended",
-		// "prettier"
-		// "eslint-config-prettier"
-		// "eslint:recommended",
+		"prettier",
+		"eslint-config-prettier",
+		"eslint:recommended"
 		// "eslint-config-airbnb-base"
 	],
 	"parser": "@typescript-eslint/parser",
@@ -18,17 +18,17 @@
 		"ecmaVersion": "latest",
 		"sourceType": "module"
 	},
-	"plugins": ["@typescript-eslint"],
+	"plugins": ["@typescript-eslint", "prettier"],
 	// "plugins": ["@typescript-eslint", "mocha", "prettier"],
 	"rules": {
 		"@typescript-eslint/no-inferrable-types": [
 			true,
 			"ignore-params",
 			"ignore-properties"
-		]
-		// "@typescript-eslint/no-unused-vars": "error",
-		// "@typescript-eslint/consistent-type-definitions": ["error", "type"],
-		// "@typescript-eslint/ban-ts-comment": "off",
-		// "prettier/prettier": "off"
+		],
+		"@typescript-eslint/no-unused-vars": "error",
+		"@typescript-eslint/consistent-type-definitions": ["error", "type"],
+		"@typescript-eslint/ban-ts-comment": "off",
+		"prettier/prettier": "off"
 	}
 }
