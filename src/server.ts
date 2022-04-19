@@ -14,7 +14,7 @@ import helmet from 'helmet';
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
-const port = config.PORT || 3000;
+const port = process.env.PORT || config.PORT;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
