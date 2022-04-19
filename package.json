@@ -4,7 +4,13 @@
 	"description": "List Maker API",
 	"main": "server.js",
 	"scripts": {
-		"setup": "npm install && npx husky install"
+		"setup": "npm install && npx husky install",
+		"lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
+		"fix": "npm run lint -- --fix",
+		"format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+		"build": "tsc",
+		"dev": "ts-node-dev --respawn ./src/index.ts",
+		"start": "node --unhandled-rejections=strict ./dist/app.js"
 	},
 	"repository": {
 		"type": "git",
