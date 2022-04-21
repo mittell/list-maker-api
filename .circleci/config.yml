@@ -47,7 +47,7 @@ workflows:
   build-deploy:
     jobs:
       - test-build-scan-lint:
-        context: SonarCloud
+          context: SonarCloud
       - deploy:
           requires:
             - test-build-scan-lint
