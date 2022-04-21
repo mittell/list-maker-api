@@ -1,14 +1,17 @@
 interface ENV {
 	PORT: number | undefined;
+	SENTRY_URL: string | undefined;
 }
 
 interface Config {
 	PORT: number;
+	SENTRY_URL: string;
 }
 
 const getConfig = (): ENV => {
 	return {
 		PORT: process.env.PORT ? Number(process.env.PORT) : undefined,
+		SENTRY_URL: process.env.SENTRY_URL ? process.env.SENTRY_URL : undefined,
 	};
 };
 
