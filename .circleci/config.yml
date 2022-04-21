@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   node: circleci/node@5.0.2
   heroku: circleci/heroku@1.2.6
+  sonarcloud: sonarsource/sonarcloud@1.0.3
 
 jobs:
   build-and-test:
@@ -23,6 +24,29 @@ jobs:
           root: ~/project
           paths:
             - .
+  scan:
+    docker:
+      - image: cimg/node:17.9.0
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - sonarcloud/scan
+
+  lint-commit-message:
+    docker:
+      - image: cimg/node:17.9.0
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Define environment variable with lastest commit's message
+          command: |
+            echo 'export COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")' >> $BASH_ENV
+            source $BASH_ENV
+      - run:
+          name: Lint commit message
+          command: echo "$COMMIT_MESSAGE" | npx commitlint
+
   deploy:
     docker:
       - image: cimg/node:17.9.0
@@ -36,6 +60,9 @@ workflows:
   build-test-deploy:
     jobs:
       - build-and-test
+      - lint-commit-message: { requires: [build-and-test] }
+      - scan:
+          context: SonarCloud
       - deploy:
           requires:
             - build-and-test
