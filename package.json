@@ -1,0 +1,54 @@
+{
+	"name": "list-maker-api",
+	"version": "1.0.0",
+	"description": "List Maker API",
+	"main": "server.js",
+	"scripts": {
+		"setup": "npm install && npx husky install",
+		"lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
+		"fix": "npm run lint -- --fix",
+		"format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+		"build": "tsc",
+		"dev": "ts-node-dev --respawn ./src/server.ts",
+		"start": "node --unhandled-rejections=strict ./dist/server.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/mittell/list-maker-api.git"
+	},
+	"author": "Chris Mittell",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/mittell/list-maker-api/issues"
+	},
+	"homepage": "https://github.com/mittell/list-maker-api#readme",
+	"devDependencies": {
+		"@commitlint/cli": "^16.2.3",
+		"@commitlint/config-conventional": "^16.2.1",
+		"@types/body-parser": "^1.19.2",
+		"@types/cors": "^2.8.12",
+		"@types/express": "^4.17.13",
+		"@types/node": "^17.0.25",
+		"@typescript-eslint/eslint-plugin": "^5.20.0",
+		"@typescript-eslint/parser": "^5.20.0",
+		"eslint": "^8.13.0",
+		"eslint-config-airbnb-base": "^15.0.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-import": "^2.26.0",
+		"eslint-plugin-prettier": "^4.0.0",
+		"husky": "^7.0.4",
+		"prettier": "^2.6.2",
+		"ts-node": "^10.7.0",
+		"ts-node-dev": "^1.1.8",
+		"typescript": "^4.6.3"
+	},
+	"dependencies": {
+		"@sentry/node": "^6.19.6",
+		"@sentry/tracing": "^6.19.6",
+		"body-parser": "^1.20.0",
+		"cors": "^2.8.5",
+		"dotenv": "^16.0.0",
+		"express": "^4.17.3",
+		"helmet": "^5.0.2"
+	}
+}
