@@ -42,7 +42,7 @@ jobs:
           at: ~/project
       - heroku/deploy-via-git:
           api-key: HEROKU_API_KEY
-          app-name: DEV_HEROKU_APP_NAME
+          app-name: $DEV_HEROKU_APP_NAME
           branch: dev
           force: true
 
@@ -54,7 +54,7 @@ jobs:
           at: ~/project
       - heroku/deploy-via-git:
           api-key: HEROKU_API_KEY
-          app-name: PROD_HEROKU_APP_NAME
+          app-name: $PROD_HEROKU_APP_NAME
           branch: main
           force: true
 
