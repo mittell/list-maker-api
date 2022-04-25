@@ -2,12 +2,14 @@ interface ENV {
 	PORT: number | undefined;
 	SENTRY_URL: string | undefined;
 	NODE_ENV: string | undefined;
+	MONGO_URL: string | undefined;
 }
 
 interface Config {
 	PORT: number;
 	SENTRY_URL: string;
 	NODE_ENV: string;
+	MONGO_URL: string;
 }
 
 const getConfig = (): ENV => {
@@ -15,6 +17,7 @@ const getConfig = (): ENV => {
 		PORT: process.env.PORT ? Number(process.env.PORT) : undefined,
 		SENTRY_URL: process.env.SENTRY_URL ? process.env.SENTRY_URL : undefined,
 		NODE_ENV: process.env.NODE_ENV ? process.env.NODE_ENV : undefined,
+		MONGO_URL: process.env.MONGO_URL ? process.env.MONGO_URL : undefined,
 	};
 };
 
