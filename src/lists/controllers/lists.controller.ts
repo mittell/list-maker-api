@@ -9,7 +9,6 @@ class ListController {
 
 	async getListById(req: express.Request, res: express.Response) {
 		const list = await ListService.getById(req.body.id);
-		console.log(req.body.id);
 		res.status(200).send(list);
 	}
 
