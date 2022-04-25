@@ -72,10 +72,10 @@ Build and run the compiled version with the build and start scripts:
 -   [x] Setup CI/CD with CircleCI and Heroku.
 -   [x] Integrate SonarCloud and commitlint into CI/CD process.
 -   [x] Integrate Sentry.
--   [ ] Setup MongoDB and Mongoose.
--   [ ] Create List Interface, DAO, Service, Controller, and Routing.
+-   [x] Setup MongoDB and Mongoose.
+-   [x] Create List Interface, DAO, Service, Controller, and Routing.
 -   [ ] Create ListItem Interface, DAO, Service, Controller, and Routing.
--   ~~[ ] Create User Interface, DAO, Service, Controller, and Routing.~~
+-   [ ] Create User Interface, DAO, Service, Controller, and Routing.~~
 -   [ ] Add Request Model Validation.
 
 ## Contact
