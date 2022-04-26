@@ -4,7 +4,6 @@ import app from './config/app.config';
 
 import * as http from 'http';
 import * as Sentry from '@sentry/node';
-// import * as Tracing from '@sentry/tracing';
 
 Sentry.init({
 	dsn: config.SENTRY_URL,
@@ -14,10 +13,9 @@ Sentry.init({
 const server: http.Server = http.createServer(app);
 const port = config.PORT;
 
-// try {
-// } catch (e) {
-// 	Sentry.captureException(e);
-// }
+server.on('error', (error) => {
+	Sentry.captureException(error);
+});
 
 export default server.listen(port, () => {
 	console.log(`Server listening on port ${port}...`);
