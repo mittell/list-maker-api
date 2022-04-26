@@ -12,34 +12,26 @@ class ErrorHandlerMiddleware {
 		res: Response,
 		next: NextFunction
 	) {
-		// res.status(err.statusCode || 500).json({
-		// 	success: false,
-		// 	error: err.message || 'Internal Server Error',
-		// });
-		// next(err);
-
-		console.log('Error handling middleware called.');
-		console.error('Error occurred:', error);
+		console.log('ErrorHandlerMiddleware called...');
 		if (error instanceof ErrorException) {
-			console.log('ErrorException');
-			res.status(error.status).send(error);
+			res.status(error.status).send({
+				errorType: ErrorException.name,
+				errorDetails: error,
+			} as ErrorModel);
 		} else if (error instanceof MongooseError.ValidationError) {
 			const messages = Object.values(error.errors).map((e) => e.message);
-			res.status(400).json({
-				success: false,
-				message: 'MongooseError.ValidationError',
-				error: messages,
-			});
+			res.status(400).send({
+				errorType: 'MongooseError.ValidationError',
+				errorDetails: messages,
+			} as ErrorModel);
 		} else if (error instanceof MongoError) {
-			res.status(400).json({
-				success: false,
-				message: 'MongoError',
-				error: error,
-			});
+			res.status(400).send({
+				errorType: 'MongoError',
+				errorDetails: error,
+			} as ErrorModel);
 		} else {
 			res.status(500).send({
-				code: ErrorCode.UnknownError,
-				status: 500,
+				errorType: ErrorCode.UnknownError,
 			} as ErrorModel);
 		}
 

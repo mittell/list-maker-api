@@ -1,5 +1,4 @@
 export class ErrorModel {
-	public code: string | undefined;
-	public status: number | undefined;
-	public metaData?: any;
+	public errorType: string | undefined;
+	public errorDetails?: any;
 }
