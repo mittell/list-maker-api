@@ -22,8 +22,8 @@ class ListItemController {
 			.then((id) => {
 				res.status(201).send({ id });
 			})
-			.catch(() => {
-				next(new Error('demo'));
+			.catch((error) => {
+				next(error);
 			});
 	}
 

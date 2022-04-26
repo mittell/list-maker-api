@@ -3,12 +3,14 @@ import { ErrorCode } from './errorCode.model';
 export class ErrorException extends Error {
 	public status: number = 0;
 	public metaData: any = null;
+
 	constructor(code: string = ErrorCode.UnknownError, metaData: any = null) {
 		super(code);
 		Object.setPrototypeOf(this, new.target.prototype);
 		this.name = code;
 		this.status = 500;
 		this.metaData = metaData;
+		
 		switch (code) {
 			case ErrorCode.Unauthenticated:
 				this.status = 401;
