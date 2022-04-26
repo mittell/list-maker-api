@@ -1,5 +1,7 @@
-import { Application, Request, Response } from 'express';
+import { Application, Request, Response, NextFunction } from 'express';
 import { RoutesConfig } from '../../config/routes.config';
+import { ErrorCode } from '../models/errorCode.model';
+import { ErrorException } from '../models/errorException.model';
 
 export class CommonRoutes extends RoutesConfig {
 	constructor(app: Application) {
@@ -11,9 +13,12 @@ export class CommonRoutes extends RoutesConfig {
 			res.status(200).send('Hello World!');
 		});
 
-		this.app.all('*', (_req: Request, res: Response) => {
-			res.status(400).send({ error: true, message: 'Invalid URL' });
-		});
+		this.app.all(
+			'*',
+			(_req: Request, _res: Response, next: NextFunction) => {
+				next(new ErrorException(ErrorCode.NotFound));
+			}
+		);
 		return this.app;
 	}
 }
