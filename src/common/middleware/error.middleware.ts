@@ -15,8 +15,8 @@ class ErrorHandlerMiddleware {
 		console.log('ErrorHandlerMiddleware called...');
 		if (error instanceof ErrorException) {
 			res.status(error.status).send({
-				errorType: ErrorException.name,
-				errorDetails: error,
+				errorType: 'ErrorException',
+				errorDetails: error.message,
 			} as ErrorModel);
 		} else if (error instanceof MongooseError.ValidationError) {
 			const messages = Object.values(error.errors).map((e) => e.message);

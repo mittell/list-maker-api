@@ -1,35 +1,65 @@
-import express from 'express';
+import { Request, Response, NextFunction } from 'express';
 import ListService from '../services/list.service';
 
 class ListController {
-	async getLists(_req: express.Request, res: express.Response) {
-		const lists = await ListService.list(100, 0);
-		res.status(200).send(lists);
+	async getLists(_req: Request, res: Response, next: NextFunction) {
+		await ListService.list(100, 0)
+			.then((lists) => {
+				res.status(200).send(lists);
+			})
+			.catch((error) => {
+				next(error);
+			});
 	}
 
-	async getListById(req: express.Request, res: express.Response) {
-		const list = await ListService.getById(req.body.id);
-		res.status(200).send(list);
+	async getListById(req: Request, res: Response, next: NextFunction) {
+		await ListService.getById(req.body.id)
+			.then((list) => {
+				res.status(200).send(list);
+			})
+			.catch((error) => {
+				next(error);
+			});
 	}
 
-	async createList(req: express.Request, res: express.Response) {
-		const listId = await ListService.create(req.body);
-		res.status(201).send({ id: listId });
+	async createList(req: Request, res: Response, next: NextFunction) {
+		await ListService.create(req.body)
+			.then((id) => {
+				res.status(201).send({ id });
+			})
+			.catch((error) => {
+				next(error);
+			});
 	}
 
-	async patchList(req: express.Request, res: express.Response) {
-		await ListService.patchById(req.body.id, req.body);
-		res.status(204).send();
+	async patchList(req: Request, res: Response, next: NextFunction) {
+		await ListService.patchById(req.body.id, req.body)
+			.then(() => {
+				res.status(204).send();
+			})
+			.catch((error) => {
+				next(error);
+			});
 	}
 
-	async putList(req: express.Request, res: express.Response) {
-		await ListService.putById(req.body.id, req.body);
-		res.status(204).send();
+	async putList(req: Request, res: Response, next: NextFunction) {
+		await ListService.putById(req.body.id, req.body)
+			.then(() => {
+				res.status(204).send();
+			})
+			.catch((error) => {
+				next(error);
+			});
 	}
 
-	async removeList(req: express.Request, res: express.Response) {
-		await ListService.deleteById(req.body.id);
-		res.status(204).send();
+	async removeList(req: Request, res: Response, next: NextFunction) {
+		await ListService.deleteById(req.body.id)
+			.then(() => {
+				res.status(204).send();
+			})
+			.catch((error) => {
+				next(error);
+			});
 	}
 }
 
