@@ -55,7 +55,9 @@ Run the provided setup script:
 Created a .env file in the project root, and make sure the following keys are added:
 
     PORT=<Add Port Number>
-    SENTRY_URL=<Add URL in "quotes">
+    SENTRY_URL=<Add Sentry url in "quotes">
+    NODE_ENV=<Add environment in "quotes">
+    MONGO_URL=<Add MongoDB path/url in "quotes">
 
 Run and debug the application with the dev script:
 
@@ -68,15 +70,17 @@ Build and run the compiled version with the build and start scripts:
 
 ## Roadmap
 
--   [x] Setup Basic API with linting for TypeScript and commit messages.
--   [x] Setup CI/CD with CircleCI and Heroku.
--   [x] Integrate SonarCloud and commitlint into CI/CD process.
--   [x] Integrate Sentry.
--   [x] Setup MongoDB and Mongoose.
--   [x] Create List Interface, DAO, Service, Controller, and Routing.
--   [ ] Create ListItem Interface, DAO, Service, Controller, and Routing.
--   [ ] Create User Interface, DAO, Service, Controller, and Routing.~~
--   [ ] Add Request Model Validation.
+-   [x] Setup Basic API with linting for TypeScript and commit messages
+-   [x] Setup CI/CD with CircleCI and Heroku
+-   [x] Integrate SonarCloud and commitlint into CI/CD process
+-   [x] Integrate Sentry
+-   [x] Setup MongoDB and Mongoose
+-   [x] Create List Interface, DAO, Service, Controller, and Routing
+-   [x] Create ListItem Interface, DAO, Service, Controller, and Routing
+-   [ ] Add Global Error Handling
+-   [ ] Update Controller Request/Response structure
+-   [ ] Create User Interface, DAO, Service, Controller, and Routing
+-   [ ] Add Request Model Validation
 
 ## Contact
 

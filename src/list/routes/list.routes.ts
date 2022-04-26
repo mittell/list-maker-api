@@ -1,7 +1,7 @@
 import express from 'express';
-import { RoutesConfig } from '../config/routes.config';
-import ListController from './controllers/lists.controller';
-import ListMiddleware from './middleware/lists.middleware';
+import { RoutesConfig } from '../../config/routes.config';
+import ListController from '../controllers/list.controller';
+import ListMiddleware from '../middleware/list.middleware';
 
 export class ListRoutes extends RoutesConfig {
 	constructor(app: express.Application) {
