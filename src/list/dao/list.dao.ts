@@ -44,7 +44,6 @@ class ListDao {
 	}
 
 	// Add CreateListDto here...
-	// Add Guid Generation here...
 	async addList(listData: any) {
 		const listId = shortid.generate();
 		const list = new this.List({

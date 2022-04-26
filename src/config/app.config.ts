@@ -4,8 +4,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 
 import { RoutesConfig } from './routes.config';
-import { ListRoutes } from '../lists/lists.routes.config';
-import { CommonRoutes } from '../common/routes/common.routes.config';
+import { ListRoutes } from '../list/routes/list.routes';
+import { CommonRoutes } from '../common/routes/common.routes';
 
 class App {
 	private routes: Array<RoutesConfig> = [];

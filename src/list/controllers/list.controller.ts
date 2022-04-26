@@ -1,5 +1,5 @@
 import express from 'express';
-import ListService from '../services/lists.service';
+import ListService from '../services/list.service';
 
 class ListController {
 	async getLists(_req: express.Request, res: express.Response) {
