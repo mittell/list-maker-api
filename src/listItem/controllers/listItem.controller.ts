@@ -1,4 +1,4 @@
-import {Request, Response} from 'express';
+import { Request, Response, NextFunction } from 'express';
 import ListItemService from '../services/listItem.service';
 
 class ListItemController {
@@ -12,9 +12,19 @@ class ListItemController {
 		res.status(200).send(listItem);
 	}
 
-	async createListItem(req: Request, res: Response) {
-		const listItemId = await ListItemService.create(req.body);
-		res.status(201).send({ id: listItemId });
+	// async createListItem(req: Request, res: Response) {
+	// 	const listItemId = await ListItemService.create(req.body);
+	// 	res.status(201).send({ id: listItemId });
+	// }
+
+	async createListItem(req: Request, res: Response, next: NextFunction) {
+		await ListItemService.create(req.body)
+			.then((id) => {
+				res.status(201).send({ id });
+			})
+			.catch(() => {
+				next(new Error('demo'));
+			});
 	}
 
 	async patchListItem(req: Request, res: Response) {
