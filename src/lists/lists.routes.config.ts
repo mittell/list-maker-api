@@ -1,9 +1,9 @@
 import express from 'express';
-import { CommonRoutesConfig } from '../common/common.routes.config';
+import { RoutesConfig } from '../config/routes.config';
 import ListController from './controllers/lists.controller';
 import ListMiddleware from './middleware/lists.middleware';
 
-export class ListRoutes extends CommonRoutesConfig {
+export class ListRoutes extends RoutesConfig {
 	constructor(app: express.Application) {
 		super(app, 'ListRoutes');
 	}

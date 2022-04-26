@@ -3,11 +3,12 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import helmet from 'helmet';
 
-import { CommonRoutesConfig } from '../common/common.routes.config';
+import { RoutesConfig } from './routes.config';
 import { ListRoutes } from '../lists/lists.routes.config';
+import { CommonRoutes } from '../common/routes/common.routes.config';
 
 class App {
-	private routes: Array<CommonRoutesConfig> = [];
+	private routes: Array<RoutesConfig> = [];
 
 	public app: express.Application;
 
@@ -26,9 +27,12 @@ class App {
 
 	private registerRoutes(): void {
 		const listRoutes = new ListRoutes(this.app);
-		this.routes.push(listRoutes);
+		const commonRoutes = new CommonRoutes(this.app);
 
-		this.routes.forEach((route: CommonRoutesConfig) => {
+		this.routes.push(listRoutes);
+		this.routes.push(commonRoutes);
+
+		this.routes.forEach((route: RoutesConfig) => {
 			console.log(`Routes configured for ${route.getName()}`);
 		});
 	}

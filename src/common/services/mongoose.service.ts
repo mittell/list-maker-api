@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import config from '../../config';
+import config from '../../config/env.config';
 import * as Sentry from '@sentry/node';
 
 class MongooseService {
