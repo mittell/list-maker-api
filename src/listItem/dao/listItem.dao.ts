@@ -59,13 +59,11 @@ class ListItemDao {
 
 	// Add UpdateListItemDto here...
 	async updateListItemById(listItemId: string, listItemData: any) {
-		const existingListItem = await this.ListItem.findOneAndUpdate(
+		return await this.ListItem.findOneAndUpdate(
 			{ _id: listItemId },
 			{ $set: listItemData },
 			{ new: true }
 		).exec();
-
-		return existingListItem;
 	}
 
 	async removeListItemById(listItemId: string) {
