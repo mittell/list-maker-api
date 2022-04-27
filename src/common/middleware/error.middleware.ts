@@ -14,24 +14,6 @@ class ErrorHandlerMiddleware {
 		res: Response,
 		next: NextFunction
 	) {
-		// switch (error.constructor) {
-		// 	case ErrorException:
-		// 		console.log('ErrorException');
-		// 		break;
-		// 	case ValidationError:
-		// 		console.log('ValidationError');
-		// 		break;
-		// 	case MongooseError.ValidationError:
-		// 		console.log('MongooseError.ValidationError');
-		// 		break;
-		// 	case MongoError:
-		// 		console.log('MongoError');
-		// 		break;
-		// 	default:
-		// 		console.log('UnknownError');
-		// 		break;
-		// }
-
 		if (error instanceof ErrorException) {
 			res.status(error.status).send({
 				errorType: 'Error',
@@ -51,6 +33,11 @@ class ErrorHandlerMiddleware {
 		} else if (error instanceof MongoError) {
 			res.status(500).send({
 				errorType: 'Error',
+				errorDetails: error,
+			} as ErrorModel);
+		} else if (error instanceof SyntaxError) {
+			res.status(500).send({
+				errorType: 'SyntaxError',
 				errorDetails: error,
 			} as ErrorModel);
 		} else {
