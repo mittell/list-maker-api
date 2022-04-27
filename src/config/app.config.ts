@@ -9,6 +9,7 @@ import { ListItemRoutes } from '../listItem/routes/listItem.routes';
 import { UserRoutes } from '../user/routes/user.routes';
 import { CommonRoutes } from '../common/routes/common.routes';
 import ErrorHandlerMiddleware from '../common/middleware/error.middleware';
+import ValidationMiddleware from '../common/middleware/validation.middleware';
 
 class App {
 	private routes: Array<RoutesConfig> = [];
@@ -47,6 +48,7 @@ class App {
 
 	private registerMiddleware(): void {
 		this.app.use(ErrorHandlerMiddleware.handleError);
+		this.app.use(ValidationMiddleware.validate);
 		console.log(`Middleware registered...`);
 	}
 }

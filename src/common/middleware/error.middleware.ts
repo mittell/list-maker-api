@@ -5,6 +5,7 @@ import { ErrorException } from '../models/errorException.model';
 import { Error as MongooseError } from 'mongoose';
 import { MongoError } from 'mongodb';
 import * as Sentry from '@sentry/node';
+import { Result as ValidationError } from 'express-validator';
 
 class ErrorHandlerMiddleware {
 	async handleError(
@@ -13,10 +14,33 @@ class ErrorHandlerMiddleware {
 		res: Response,
 		next: NextFunction
 	) {
+		// switch (error.constructor) {
+		// 	case ErrorException:
+		// 		console.log('ErrorException');
+		// 		break;
+		// 	case ValidationError:
+		// 		console.log('ValidationError');
+		// 		break;
+		// 	case MongooseError.ValidationError:
+		// 		console.log('MongooseError.ValidationError');
+		// 		break;
+		// 	case MongoError:
+		// 		console.log('MongoError');
+		// 		break;
+		// 	default:
+		// 		console.log('UnknownError');
+		// 		break;
+		// }
+
 		if (error instanceof ErrorException) {
 			res.status(error.status).send({
 				errorType: 'ErrorException',
 				errorDetails: error.message,
+			} as ErrorModel);
+		} else if (error instanceof ValidationError) {
+			res.status(400).send({
+				errorType: 'ExpressValidator.ValidationError',
+				errorDetails: error.array(),
 			} as ErrorModel);
 		} else if (error instanceof MongooseError.ValidationError) {
 			const messages = Object.values(error.errors).map((e) => e.message);
