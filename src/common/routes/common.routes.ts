@@ -16,7 +16,7 @@ export class CommonRoutes extends RoutesConfig {
 		this.app.all(
 			'*',
 			(_req: Request, _res: Response, next: NextFunction) => {
-				next(new ErrorException(ErrorCode.NotFound));
+				next(new ErrorException(ErrorCode.UnknownError));
 			}
 		);
 		return this.app;
