@@ -24,7 +24,7 @@ class ListController {
 				req.query.listItems === 'true' ||
 				req.query.listItems === 'True';
 
-			let existingList = await ListService.getById(req.body.id);
+			const existingList = await ListService.getById(req.body.id);
 
 			if (!existingList) {
 				next(new ErrorException(ErrorCode.NotFound));
