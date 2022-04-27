@@ -31,6 +31,6 @@ const getSanitizedConfig = (configValues: ENV): Config => {
 };
 
 const config = getConfig();
-const sanitizedConfig = getSanitizedConfig(config);
+const env = getSanitizedConfig(config);
 
-export default sanitizedConfig;
+export default env;
