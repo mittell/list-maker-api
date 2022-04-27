@@ -4,6 +4,7 @@ import { ErrorCode } from '../models/errorCode.model';
 import { ErrorException } from '../models/errorException.model';
 import { Error as MongooseError } from 'mongoose';
 import { MongoError } from 'mongodb';
+import * as Sentry from '@sentry/node';
 
 class ErrorHandlerMiddleware {
 	async handleError(
@@ -12,7 +13,6 @@ class ErrorHandlerMiddleware {
 		res: Response,
 		next: NextFunction
 	) {
-		console.log('ErrorHandlerMiddleware called...');
 		if (error instanceof ErrorException) {
 			res.status(error.status).send({
 				errorType: 'ErrorException',
@@ -35,6 +35,7 @@ class ErrorHandlerMiddleware {
 			} as ErrorModel);
 		}
 
+		Sentry.captureException(error);
 		next(error);
 	}
 }

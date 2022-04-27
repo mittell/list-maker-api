@@ -56,13 +56,11 @@ class ListDao {
 
 	// Add UpdateListDto here...
 	async updateListById(listId: string, listData: any) {
-		const existingList = await this.List.findOneAndUpdate(
+		return this.List.findOneAndUpdate(
 			{ _id: listId },
 			{ $set: listData },
 			{ new: true }
 		).exec();
-
-		return existingList;
 	}
 
 	async removeListById(listId: string) {

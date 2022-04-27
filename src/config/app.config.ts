@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import helmet from 'helmet';
 
-import { RoutesConfig } from './routes.config';
+import { RoutesConfig } from '../common/config/routes.config';
 import { ListRoutes } from '../list/routes/list.routes';
 import { ListItemRoutes } from '../listItem/routes/listItem.routes';
 import { CommonRoutes } from '../common/routes/common.routes';

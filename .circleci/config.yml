@@ -9,6 +9,7 @@ jobs:
   test-build-scan-lint:
     docker:
       - image: cimg/node:17.9.0
+    resource_class: small
 
     steps:
       - checkout
@@ -37,6 +38,8 @@ jobs:
   deploy-dev:
     docker:
       - image: cimg/node:17.9.0
+    resource_class: small
+    
     steps:
       - attach_workspace:
           at: ~/project
@@ -49,6 +52,8 @@ jobs:
   deploy-prod:
     docker:
       - image: cimg/node:17.9.0
+    resource_class: small
+    
     steps:
       - attach_workspace:
           at: ~/project
