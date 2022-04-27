@@ -34,23 +34,23 @@ class ErrorHandlerMiddleware {
 
 		if (error instanceof ErrorException) {
 			res.status(error.status).send({
-				errorType: 'ErrorException',
+				errorType: 'Error',
 				errorDetails: error.message,
 			} as ErrorModel);
 		} else if (error instanceof ValidationError) {
-			res.status(400).send({
-				errorType: 'ExpressValidator.ValidationError',
+			res.status(406).send({
+				errorType: ErrorCode.ValidationError,
 				errorDetails: error.array(),
 			} as ErrorModel);
 		} else if (error instanceof MongooseError.ValidationError) {
 			const messages = Object.values(error.errors).map((e) => e.message);
-			res.status(400).send({
-				errorType: 'MongooseError.ValidationError',
+			res.status(406).send({
+				errorType: ErrorCode.ValidationError,
 				errorDetails: messages,
 			} as ErrorModel);
 		} else if (error instanceof MongoError) {
-			res.status(400).send({
-				errorType: 'MongoError',
+			res.status(500).send({
+				errorType: 'Error',
 				errorDetails: error,
 			} as ErrorModel);
 		} else {

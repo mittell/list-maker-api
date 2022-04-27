@@ -10,16 +10,22 @@ export class ErrorException extends Error {
 		this.name = code;
 		this.status = 500;
 		this.metaData = metaData;
-		
+
 		switch (code) {
 			case ErrorCode.Unauthenticated:
 				this.status = 401;
 				break;
-			case ErrorCode.AsyncError:
-				this.status = 400;
+			case ErrorCode.Unauthorised:
+				this.status = 403;
 				break;
 			case ErrorCode.NotFound:
 				this.status = 404;
+				break;
+			case ErrorCode.InvalidUrl:
+				this.status = 400;
+				break;
+			case ErrorCode.ValidationError:
+				this.status = 406;
 				break;
 			default:
 				this.status = 500;
