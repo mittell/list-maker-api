@@ -42,6 +42,10 @@ class ListItemDao {
 		return this.ListItem.find().exec();
 	}
 
+	async getListItemsByListId(listId: string) {
+		return this.ListItem.find({ listId: listId }).exec();
+	}
+
 	async getListItemById(listItemId: string) {
 		return this.ListItem.findOne({ _id: listItemId }).exec();
 	}
