@@ -79,9 +79,13 @@ Build and run the compiled version with the build and start scripts:
 -   [x] Create ListItem Interface, DAO, Service, Controller, and Routing
 -   [x] Add Global Error Handling
 -   [x] Update Controller Request/Response structure
--   [ ] Create User Interface, DAO, Service, Controller, and Routing
--   [ ] Add Request Model Validation
-
+-   [x] Create User Interface, DAO, Service, Controller, and Routing
+-   [ ] Add Request Data Validation Middleware
+-   [ ] Add Request/Response DTOs
+-   [ ] Add User Password Generation/Comparison Logic
+-   [ ] Add Request Authentication Middleware
+-   [ ] Add JWT Middleware and Authentication Integration
+ 
 ## Contact
 
 Feel free to find and contact me at the following:
