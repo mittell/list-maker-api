@@ -5,6 +5,7 @@ import { ErrorException } from '../models/errorException.model';
 import { Error as MongooseError } from 'mongoose';
 import { MongoError } from 'mongodb';
 import * as Sentry from '@sentry/node';
+import { Result as ValidationError } from 'express-validator';
 
 class ErrorHandlerMiddleware {
 	async handleError(
@@ -15,18 +16,28 @@ class ErrorHandlerMiddleware {
 	) {
 		if (error instanceof ErrorException) {
 			res.status(error.status).send({
-				errorType: 'ErrorException',
+				errorType: 'Error',
 				errorDetails: error.message,
+			} as ErrorModel);
+		} else if (error instanceof ValidationError) {
+			res.status(406).send({
+				errorType: ErrorCode.ValidationError,
+				errorDetails: error.array(),
 			} as ErrorModel);
 		} else if (error instanceof MongooseError.ValidationError) {
 			const messages = Object.values(error.errors).map((e) => e.message);
-			res.status(400).send({
-				errorType: 'MongooseError.ValidationError',
+			res.status(406).send({
+				errorType: ErrorCode.ValidationError,
 				errorDetails: messages,
 			} as ErrorModel);
 		} else if (error instanceof MongoError) {
-			res.status(400).send({
-				errorType: 'MongoError',
+			res.status(500).send({
+				errorType: 'Error',
+				errorDetails: error,
+			} as ErrorModel);
+		} else if (error instanceof SyntaxError) {
+			res.status(500).send({
+				errorType: 'SyntaxError',
 				errorDetails: error,
 			} as ErrorModel);
 		} else {

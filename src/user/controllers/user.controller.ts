@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
+import { ErrorCode } from '../../common/models/errorCode.model';
+import { ErrorException } from '../../common/models/errorException.model';
 import UserService from '../services/user.service';
 
 class UserController {
@@ -33,6 +35,14 @@ class UserController {
 	}
 
 	async patchUser(req: Request, res: Response, next: NextFunction) {
+		if (
+			req.body.username === undefined &&
+			req.body.email === undefined &&
+			req.body.password === undefined
+		) {
+			next(new ErrorException(ErrorCode.ValidationError));
+		}
+
 		await UserService.patchById(req.body.id, req.body)
 			.then(() => {
 				res.status(202).send();
