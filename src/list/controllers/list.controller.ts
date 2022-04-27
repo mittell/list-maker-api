@@ -55,6 +55,14 @@ class ListController {
 	}
 
 	async patchList(req: Request, res: Response, next: NextFunction) {
+		if (
+			req.body.title === undefined &&
+			req.body.description === undefined &&
+			req.body.userId === undefined
+		) {
+			next(new ErrorException(ErrorCode.ValidationError));
+		}
+
 		await ListService.patchById(req.body.id, req.body)
 			.then(() => {
 				res.status(204).send();

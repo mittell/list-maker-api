@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
+import { ErrorCode } from '../../common/models/errorCode.model';
+import { ErrorException } from '../../common/models/errorException.model';
 import ListItemService from '../services/listItem.service';
 
 class ListItemController {
@@ -33,6 +35,14 @@ class ListItemController {
 	}
 
 	async patchListItem(req: Request, res: Response, next: NextFunction) {
+		if (
+			req.body.title === undefined &&
+			req.body.description === undefined &&
+			req.body.userId === undefined
+		) {
+			next(new ErrorException(ErrorCode.ValidationError));
+		}
+
 		await ListItemService.patchById(req.body.id, req.body)
 			.then(() => {
 				res.status(202).send();
