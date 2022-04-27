@@ -2,6 +2,8 @@ import express from 'express';
 import { RoutesConfig } from '../../common/config/routes.config';
 import ListController from '../controllers/list.controller';
 import ListMiddleware from '../middleware/list.middleware';
+import ValidationMiddleware from '../../common/middleware/validation.middleware';
+import { body } from 'express-validator';
 
 export class ListRoutes extends RoutesConfig {
 	constructor(app: express.Application) {
@@ -12,14 +14,37 @@ export class ListRoutes extends RoutesConfig {
 		this.app
 			.route(`/api/v1/lists`)
 			.get(ListController.getLists)
-			.post(ListController.createList);
+			.post(
+				ValidationMiddleware.validate([
+					body('title').exists().notEmpty(),
+					body('description').exists().notEmpty(),
+					body('userId').exists().notEmpty(), // Will need another middleware to check for valid userId
+				]),
+				ListController.createList
+			);
 
 		this.app.param(`listId`, ListMiddleware.extractListId);
 		this.app
 			.route(`/api/v1/lists/:listId`)
 			.get(ListController.getListById)
-			.put(ListController.putList)
-			.patch(ListController.patchList)
+			.put(
+				ValidationMiddleware.validate([
+					body('title').exists().notEmpty(),
+					body('description').exists().notEmpty(),
+					body('userId').exists().notEmpty(), // Will need another middleware to check for valid userId
+				]),
+				ListController.putList
+			)
+			.patch(
+				ValidationMiddleware.validate([
+					body('title').if(body('title').exists()).notEmpty(),
+					body('description')
+						.if(body('description').exists())
+						.notEmpty(),
+					body('userId').if(body('userId').exists()).notEmpty(), // Will need another middleware to check for valid userId
+				]),
+				ListController.patchList
+			)
 			.delete(ListController.removeList);
 
 		return this.app;
