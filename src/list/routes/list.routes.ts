@@ -1,5 +1,5 @@
 import express from 'express';
-import { RoutesConfig } from '../../config/routes.config';
+import { RoutesConfig } from '../../common/config/routes.config';
 import ListController from '../controllers/list.controller';
 import ListMiddleware from '../middleware/list.middleware';
 
