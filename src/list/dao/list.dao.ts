@@ -56,7 +56,7 @@ class ListDao {
 
 	// Add UpdateListDto here...
 	async updateListById(listId: string, listData: any) {
-		return await this.List.findOneAndUpdate(
+		return this.List.findOneAndUpdate(
 			{ _id: listId },
 			{ $set: listData },
 			{ new: true }
