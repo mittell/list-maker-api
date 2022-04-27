@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import { RoutesConfig } from '../common/config/routes.config';
 import { ListRoutes } from '../list/routes/list.routes';
 import { ListItemRoutes } from '../listItem/routes/listItem.routes';
+import { UserRoutes } from '../user/routes/user.routes';
 import { CommonRoutes } from '../common/routes/common.routes';
 import ErrorHandlerMiddleware from '../common/middleware/error.middleware';
 
@@ -31,10 +32,12 @@ class App {
 	private registerRoutes(): void {
 		const listRoutes = new ListRoutes(this.app);
 		const listItemRoutes = new ListItemRoutes(this.app);
+		const userRoutes = new UserRoutes(this.app);
 		const commonRoutes = new CommonRoutes(this.app);
 
 		this.routes.push(listRoutes);
 		this.routes.push(listItemRoutes);
+		this.routes.push(userRoutes);
 		this.routes.push(commonRoutes);
 
 		this.routes.forEach((route: RoutesConfig) => {
