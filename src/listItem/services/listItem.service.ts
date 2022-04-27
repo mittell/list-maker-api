@@ -6,6 +6,10 @@ class ListItemService implements CRUD {
 		return ListItemDao.getListItems();
 	}
 
+	async listByListId(id: string) {
+		return ListItemDao.getListItemsByListId(id);
+	}
+
 	async getById(id: string) {
 		return ListItemDao.getListItemById(id);
 	}

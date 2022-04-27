@@ -1,5 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import ListService from '../services/list.service';
+import ListItemService from '../../listItem/services/listItem.service';
+import { ErrorException } from '../../common/models/errorException.model';
+import { ErrorCode } from '../../common/models/errorCode.model';
+import { ListToReturnDto } from '../dto/listToReturn.dto';
 
 class ListController {
 	async getLists(_req: Request, res: Response, next: NextFunction) {
@@ -13,13 +17,31 @@ class ListController {
 	}
 
 	async getListById(req: Request, res: Response, next: NextFunction) {
-		await ListService.getById(req.body.id)
-			.then((list) => {
-				res.status(200).send(list);
-			})
-			.catch((error) => {
-				next(error);
-			});
+		try {
+			let listToReturn: ListToReturnDto = new ListToReturnDto();
+
+			let getListItems =
+				req.query.listItems === 'true' ||
+				req.query.listItems === 'True';
+
+			let existingList = await ListService.getById(req.body.id);
+
+			if (!existingList) {
+				next(new ErrorException(ErrorCode.NotFound));
+			}
+
+			listToReturn.mapListFromDocument(existingList);
+
+			if (existingList && getListItems) {
+				listToReturn.mapListItemsFromDocument(
+					await ListItemService.listByListId(req.body.id)
+				);
+			}
+
+			res.status(200).send(listToReturn);
+		} catch (error) {
+			next(error);
+		}
 	}
 
 	async createList(req: Request, res: Response, next: NextFunction) {
