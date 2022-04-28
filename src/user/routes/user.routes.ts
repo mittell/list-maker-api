@@ -27,7 +27,14 @@ export class UserRoutes extends RoutesConfig {
 		this.app
 			.route(`/api/v1/users/:userId`)
 			.get(UserController.getUserById) // No need for exposure later...
-			.put(UserController.putUser) // No need for exposure later...
+			.put(
+				ValidationMiddleware.validate([
+					body('username').exists().notEmpty(),
+					body('email').exists().notEmpty().isEmail(),
+					body('password').exists().notEmpty().isLength({ min: 6 }),
+				]),
+				UserController.putUser
+			) // No need for exposure later...
 			.patch(
 				ValidationMiddleware.validate([
 					body('username').if(body('username').exists()).notEmpty(),
