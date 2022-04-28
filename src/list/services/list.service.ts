@@ -2,7 +2,7 @@ import ListDao from '../dao/list.dao';
 import { CRUD } from '../../common/interfaces/crud.interface';
 
 class ListService implements CRUD {
-	async list(limit: number, page: number) {
+	async list(limit?: number, page?: number) {
 		return ListDao.getLists(limit, page);
 	}
 

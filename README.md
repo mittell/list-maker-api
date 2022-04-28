@@ -80,8 +80,9 @@ Build and run the compiled version with the build and start scripts:
 -   [x] Add Global Error Handling
 -   [x] Update Controller Request/Response structure
 -   [x] Create User Interface, DAO, Service, Controller, and Routing
--   [ ] Add Request Data Validation Middleware
--   [ ] Add Request/Response DTOs
+-   [x] Add Request Data Validation Middleware
+-   [x] Add Request/Response DTOs
+-   [ ] Review/Refactor/Optimise
 -   [ ] Add User Password Generation/Comparison Logic
 -   [ ] Add Request Authentication Middleware
 -   [ ] Add JWT Middleware and Authentication Integration
