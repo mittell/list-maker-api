@@ -13,11 +13,11 @@ export class ListItemRoutes extends RoutesConfig {
 	configureRoutes() {
 		this.app
 			.route(`/api/v1/listItems`)
-			.get(ListItemController.getListItems)
+			.get(ListItemController.getListItems) // No need for exposure later...
 			.post(
 				ValidationMiddleware.validate([
 					body('title').exists().notEmpty(),
-					body('description').exists().notEmpty().isEmail(),
+					body('description').exists().notEmpty(),
 					body('isComplete')
 						.if(body('isComplete').exists())
 						.isBoolean(),
@@ -33,7 +33,7 @@ export class ListItemRoutes extends RoutesConfig {
 			.put(
 				ValidationMiddleware.validate([
 					body('title').exists().notEmpty(),
-					body('description').exists().notEmpty().isEmail(),
+					body('description').exists().notEmpty(),
 					body('isComplete')
 						.if(body('isComplete').exists())
 						.isBoolean(),
@@ -46,8 +46,7 @@ export class ListItemRoutes extends RoutesConfig {
 					body('title').if(body('title').exists()).notEmpty(),
 					body('description')
 						.if(body('description').exists())
-						.notEmpty()
-						.isEmail(),
+						.notEmpty(),
 					body('isComplete')
 						.if(body('isComplete').exists())
 						.isBoolean(),
