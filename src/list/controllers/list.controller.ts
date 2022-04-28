@@ -4,12 +4,24 @@ import ListItemService from '../../listItem/services/listItem.service';
 import { ErrorException } from '../../common/models/errorException.model';
 import { ErrorCode } from '../../common/models/errorCode.model';
 import { ListToReturnDto } from '../dto/listToReturn.dto';
+import { ListToCreateDto } from '../dto/listToCreate.dto';
+import { ListToUpdateDto } from '../dto/listToUpdate.dto';
 
 class ListController {
-	async getLists(_req: Request, res: Response, next: NextFunction) {
-		await ListService.list(100, 0)
+	async getLists(req: Request, res: Response, next: NextFunction) {
+		let listsToReturn: ListToReturnDto[] = [];
+		let limit = parseInt(req.query.limit as string);
+		let page = parseInt(req.query.page as string);
+
+		await ListService.list(limit, page)
 			.then((lists) => {
-				res.status(200).send(lists);
+				lists.forEach((list) => {
+					let listToAdd: ListToReturnDto = new ListToReturnDto();
+					listToAdd.mapListFromDocument(list);
+					listToAdd.updatePageLimit(page, limit);
+					listsToReturn.push(listToAdd);
+				});
+				res.status(200).send(listsToReturn);
 			})
 			.catch((error) => {
 				next(error);
@@ -18,8 +30,6 @@ class ListController {
 
 	async getListById(req: Request, res: Response, next: NextFunction) {
 		try {
-			let listToReturn: ListToReturnDto = new ListToReturnDto();
-
 			let getListItems =
 				req.query.listItems === 'true' ||
 				req.query.listItems === 'True';
@@ -29,6 +39,8 @@ class ListController {
 			if (!existingList) {
 				next(new ErrorException(ErrorCode.NotFound));
 			}
+
+			let listToReturn: ListToReturnDto = new ListToReturnDto();
 
 			listToReturn.mapListFromDocument(existingList);
 
@@ -45,9 +57,13 @@ class ListController {
 	}
 
 	async createList(req: Request, res: Response, next: NextFunction) {
-		await ListService.create(req.body)
+		let listToCreate: ListToCreateDto = new ListToCreateDto();
+		listToCreate.mapListFromRequest(req.body);
+
+		await ListService.create(listToCreate)
 			.then((id) => {
-				res.status(201).send({ id });
+				listToCreate.updateId(id);
+				res.status(201).send({ id: listToCreate.getId() });
 			})
 			.catch((error) => {
 				next(error);
@@ -63,7 +79,10 @@ class ListController {
 			next(new ErrorException(ErrorCode.ValidationError));
 		}
 
-		await ListService.patchById(req.body.id, req.body)
+		let listToUpdate: ListToUpdateDto = new ListToUpdateDto();
+		listToUpdate.mapListFromRequest(req.body);
+
+		await ListService.patchById(listToUpdate.id, listToUpdate)
 			.then(() => {
 				res.status(204).send();
 			})
@@ -73,7 +92,10 @@ class ListController {
 	}
 
 	async putList(req: Request, res: Response, next: NextFunction) {
-		await ListService.putById(req.body.id, req.body)
+		let listToUpdate: ListToUpdateDto = new ListToUpdateDto();
+		listToUpdate.mapListFromRequest(req.body);
+
+		await ListService.putById(listToUpdate.id, listToUpdate)
 			.then(() => {
 				res.status(204).send();
 			})
@@ -83,6 +105,12 @@ class ListController {
 	}
 
 	async removeList(req: Request, res: Response, next: NextFunction) {
+		const existingList = await ListService.getById(req.body.id);
+
+		if (!existingList) {
+			next(new ErrorException(ErrorCode.NotFound));
+		}
+
 		await ListService.deleteById(req.body.id)
 			.then(() => {
 				res.status(204).send();

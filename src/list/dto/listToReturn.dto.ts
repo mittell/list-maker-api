@@ -5,6 +5,8 @@ export class ListToReturnDto {
 	createdAt!: Date;
 	updatedAt!: Date;
 	listItems!: any[];
+	page!: number;
+	limit!: number;
 
 	mapListFromDocument(list: any) {
 		this.id = list._id;
@@ -26,5 +28,10 @@ export class ListToReturnDto {
 				updatedAt: item.updatedAt,
 			});
 		});
+	}
+
+	updatePageLimit(page: number, limit: number) {
+		this.page = page;
+		this.limit = limit;
 	}
 }
