@@ -98,7 +98,7 @@ class ListItemController {
 			next(new ErrorException(ErrorCode.NotFound));
 		}
 
-		await ListItemService.deleteById(req.body.id)
+		await ListItemService.deleteById(existingListItem._id)
 			.then(() => {
 				res.status(204).send();
 			})
