@@ -8,9 +8,17 @@ import ListItemService from '../services/listItem.service';
 
 class ListItemController {
 	async getListItems(_req: Request, res: Response, next: NextFunction) {
+		let listItemsToReturn: ListItemToReturnDto[] = [];
+
 		await ListItemService.list()
 			.then((listItems) => {
-				res.status(200).send(listItems);
+				listItems.forEach((listItem) => {
+					let listItemToAdd: ListItemToReturnDto =
+						new ListItemToReturnDto();
+					listItemToAdd.mapFromDocument(listItem);
+					listItemsToReturn.push(listItemToAdd);
+				});
+				res.status(200).send(listItemsToReturn);
 			})
 			.catch((error) => {
 				next(error);
