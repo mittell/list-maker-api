@@ -1,5 +1,6 @@
 import { ErrorCode } from './errorCode.model';
 
+// TODO - Reconsider implementation and use of enum of status codes?
 export class ErrorException extends Error {
 	public status: number = 0;
 	public metaData: any = null;

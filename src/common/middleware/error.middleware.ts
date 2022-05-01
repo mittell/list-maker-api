@@ -7,6 +7,7 @@ import { MongoError } from 'mongodb';
 import * as Sentry from '@sentry/node';
 import { Result as ValidationError } from 'express-validator';
 
+// TODO - Clean up error instance checking and handling, create error type/number enum?
 class ErrorHandlerMiddleware {
 	async handleError(
 		error: any,

@@ -10,12 +10,15 @@ import { ListToUpdateDto } from '../dto/listToUpdate.dto';
 class ListController {
 	async getLists(req: Request, res: Response, next: NextFunction) {
 		let listsToReturn: ListToReturnDto[] = [];
+
+		// TODO - Consider validation and injection of variables into extended Request class?
 		let limit = parseInt(req.query.limit as string);
 		let page = parseInt(req.query.page as string);
 
 		await ListService.list(limit, page)
 			.then((lists) => {
 				lists.forEach((list) => {
+					// TODO - Review implementation... seriously!
 					let listToAdd: ListToReturnDto = new ListToReturnDto();
 					listToAdd.mapListFromDocument(list);
 					listToAdd.updatePageLimit(page, limit);
@@ -29,11 +32,14 @@ class ListController {
 	}
 
 	async getListById(req: Request, res: Response, next: NextFunction) {
+		// TODO - Remove try-catch use
 		try {
+			// TODO - Have listItems value be part of extended Request class? and validated prior?
 			let getListItems =
 				req.query.listItems === 'true' ||
 				req.query.listItems === 'True';
 
+			// TODO - Use .then() promise logic here instead...
 			const existingList = await ListService.getById(req.body.id);
 
 			if (!existingList) {
@@ -44,6 +50,7 @@ class ListController {
 
 			listToReturn.mapListFromDocument(existingList);
 
+			// TODO - Review implementation
 			if (existingList && getListItems) {
 				listToReturn.mapListItemsFromDocument(
 					await ListItemService.listByListId(req.body.id)
@@ -62,6 +69,7 @@ class ListController {
 
 		await ListService.create(listToCreate)
 			.then((id) => {
+				// TODO - Review this idea of updating the Id and returning the object received...
 				listToCreate.updateId(id);
 				res.status(201).send({ id: listToCreate.getId() });
 			})
@@ -71,6 +79,7 @@ class ListController {
 	}
 
 	async patchList(req: Request, res: Response, next: NextFunction) {
+		// TODO - This logic should be part of the standard validation at routing level!!!
 		if (
 			req.body.title === undefined &&
 			req.body.description === undefined &&

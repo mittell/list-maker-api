@@ -13,7 +13,7 @@ export class UserRoutes extends RoutesConfig {
 	configureRoutes() {
 		this.app
 			.route(`/api/v1/users`)
-			.get(UserController.getUsers) // No need for exposure later...
+			.get(UserController.getUsers) // TODO - Remove
 			.post(
 				ValidationMiddleware.validate([
 					body('username').exists().notEmpty(),
@@ -26,7 +26,7 @@ export class UserRoutes extends RoutesConfig {
 		this.app.param(`userId`, UserMiddleware.extractUserId);
 		this.app
 			.route(`/api/v1/users/:userId`)
-			.get(UserController.getUserById) // No need for exposure later...
+			.get(UserController.getUserById) // TODO - Needs authentication!
 			.put(
 				ValidationMiddleware.validate([
 					body('username').exists().notEmpty(),
@@ -34,7 +34,7 @@ export class UserRoutes extends RoutesConfig {
 					body('password').exists().notEmpty().isLength({ min: 6 }),
 				]),
 				UserController.putUser
-			) // No need for exposure later...
+			) // TODO - Needs authentication!
 			.patch(
 				ValidationMiddleware.validate([
 					body('username').if(body('username').exists()).notEmpty(),
@@ -48,8 +48,8 @@ export class UserRoutes extends RoutesConfig {
 						.isLength({ min: 6 }),
 				]),
 				UserController.patchUser
-			)
-			.delete(UserController.removeUser); // No need for exposure later...
+			) // TODO - Needs authentication!
+			.delete(UserController.removeUser); // TODO - Remove?
 
 		return this.app;
 	}

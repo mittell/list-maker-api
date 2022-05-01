@@ -4,6 +4,7 @@ import shortid from 'shortid';
 class ListDao {
 	Schema = mongooseService.getMongoose().Schema;
 
+	// TODO - Object only has a Mongoose Schema and no actual Class/Interface of its own!!! - Typegoose?
 	listSchema = new this.Schema(
 		{
 			_id: String,
@@ -21,6 +22,7 @@ class ListDao {
 			},
 		},
 		{
+			// TODO - Do we want id set to false?
 			id: false,
 			timestamps: true,
 		}
@@ -32,6 +34,7 @@ class ListDao {
 		console.log('Created a new instance of ListsDao');
 	}
 
+	// TODO - Set limit and page defaults elsewhere?
 	async getLists(limit = 10, page = 0) {
 		return this.List.find()
 			.limit(limit)
@@ -43,7 +46,7 @@ class ListDao {
 		return this.List.findOne({ _id: listId }).exec();
 	}
 
-	// Add CreateListDto here...
+	// TODO - Reference DTO here instead of any...
 	async addList(listData: any) {
 		const listId = shortid.generate();
 		const list = new this.List({
@@ -54,7 +57,7 @@ class ListDao {
 		return listId;
 	}
 
-	// Add UpdateListDto here...
+	// TODO - Reference DTO here instead of any...
 	async updateListById(listId: string, listData: any) {
 		return this.List.findOneAndUpdate(
 			{ _id: listId },

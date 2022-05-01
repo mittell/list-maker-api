@@ -1,5 +1,6 @@
 import express from 'express';
 
+// TODO - Move this types folder?
 export abstract class RoutesConfig {
 	app: express.Application;
 	name: string;

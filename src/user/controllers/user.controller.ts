@@ -7,12 +7,14 @@ import { UserToUpdateDto } from '../dto/userToUpdate.dto';
 import UserService from '../services/user.service';
 
 class UserController {
+	// TODO - Exposed endpoint needs to be removed!
 	async getUsers(_req: Request, res: Response, next: NextFunction) {
 		let usersToReturn: UserToReturnDto[] = [];
 
 		await UserService.list()
 			.then((users) => {
 				users.forEach((user) => {
+					// TODO - Review implementation..
 					let userToAdd: UserToReturnDto = new UserToReturnDto();
 					userToAdd.mapFromDocument(user);
 					usersToReturn.push(userToAdd);
@@ -24,6 +26,7 @@ class UserController {
 			});
 	}
 
+	// TODO - Endpoint will need authentication, so only the user can get their own details?
 	async getUserById(req: Request, res: Response, next: NextFunction) {
 		try {
 			const existingUser = await UserService.getById(req.body.id);
@@ -45,6 +48,8 @@ class UserController {
 		let userToCreate: UserToCreateDto = new UserToCreateDto();
 		userToCreate.mapFromRequest(req.body);
 
+		// TODO - Password generation and hashing needed to happen here!!!
+
 		await UserService.create(req.body)
 			.then((id) => {
 				userToCreate.updateId(id);
@@ -55,7 +60,9 @@ class UserController {
 			});
 	}
 
+	// TODO - Endpoint will need authentication, so only the user can get update own details?
 	async patchUser(req: Request, res: Response, next: NextFunction) {
+		// TODO - This logic should be part of the standard validation at routing level!!!
 		if (
 			req.body.username === undefined &&
 			req.body.email === undefined &&
@@ -67,6 +74,8 @@ class UserController {
 		let userToUpdate: UserToUpdateDto = new UserToUpdateDto();
 		userToUpdate.mapFromRequest(req.body);
 
+		// TODO - Password hashing needed to happen here!!!
+
 		await UserService.patchById(userToUpdate.id, userToUpdate)
 			.then(() => {
 				res.status(202).send();
@@ -76,9 +85,12 @@ class UserController {
 			});
 	}
 
+	// TODO - Endpoint will need authentication, so only the user can get update own details?
 	async putUser(req: Request, res: Response, next: NextFunction) {
 		let userToUpdate: UserToUpdateDto = new UserToUpdateDto();
 		userToUpdate.mapFromRequest(req.body);
+
+		// TODO - Password hashing needed to happen here!!!
 
 		await UserService.putById(userToUpdate.id, userToUpdate)
 			.then(() => {
@@ -89,6 +101,7 @@ class UserController {
 			});
 	}
 
+	// TODO - Exposed endpoint needs to be removed???
 	async removeUser(req: Request, res: Response, next: NextFunction) {
 		const existingUser = await UserService.getById(req.body.id);
 

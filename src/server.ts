@@ -5,6 +5,7 @@ import app from './config/app.config';
 import * as http from 'http';
 import * as Sentry from '@sentry/node';
 
+// TODO - Review where this needs to occur?
 Sentry.init({
 	dsn: config.SENTRY_URL,
 	tracesSampleRate: 1.0,
@@ -17,6 +18,7 @@ server.on('error', (error) => {
 	Sentry.captureException(error);
 });
 
+// TODO - Review stop/start mechanisms...
 export default server.listen(port, () => {
 	console.log(`Server listening on port ${port}...`);
 	console.log(`Environment - ${config.NODE_ENV}`);

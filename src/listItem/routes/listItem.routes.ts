@@ -10,10 +10,11 @@ export class ListItemRoutes extends RoutesConfig {
 		super(app, 'ListItemRoutes');
 	}
 
+	// TODO - Review optional and required logic methods from express-validator
 	configureRoutes() {
 		this.app
 			.route(`/api/v1/listItems`)
-			.get(ListItemController.getListItems) // No need for exposure later...
+			.get(ListItemController.getListItems) // TODO - Remove this?
 			.post(
 				ValidationMiddleware.validate([
 					body('title').exists().notEmpty(),
@@ -21,7 +22,7 @@ export class ListItemRoutes extends RoutesConfig {
 					body('isComplete')
 						.if(body('isComplete').exists())
 						.isBoolean(),
-					body('listId').exists().notEmpty(), // Will need another middleware to check for valid listId
+					body('listId').exists().notEmpty(), // TODO - ListId needs to be validated somewhere?
 				]),
 				ListItemController.createListItem
 			);
@@ -37,7 +38,7 @@ export class ListItemRoutes extends RoutesConfig {
 					body('isComplete')
 						.if(body('isComplete').exists())
 						.isBoolean(),
-					body('listId').exists().notEmpty(), // Will need another middleware to check for valid listId
+					body('listId').exists().notEmpty(), // TODO - ListId needs to be validated somewhere?
 				]),
 				ListItemController.putListItem
 			)
@@ -50,7 +51,7 @@ export class ListItemRoutes extends RoutesConfig {
 					body('isComplete')
 						.if(body('isComplete').exists())
 						.isBoolean(),
-					body('listId').if(body('listId').exists()).notEmpty(), // Will need another middleware to check for valid listId
+					body('listId').if(body('listId').exists()).notEmpty(), // TODO - ListId needs to be validated somewhere?
 				]),
 				ListItemController.patchListItem
 			)

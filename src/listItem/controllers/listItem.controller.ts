@@ -13,6 +13,7 @@ class ListItemController {
 		await ListItemService.list()
 			.then((listItems) => {
 				listItems.forEach((listItem) => {
+					// TODO - Review implementation..
 					let listItemToAdd: ListItemToReturnDto =
 						new ListItemToReturnDto();
 					listItemToAdd.mapFromDocument(listItem);
@@ -26,6 +27,7 @@ class ListItemController {
 	}
 
 	async getListItemById(req: Request, res: Response, next: NextFunction) {
+		// TODO - Remove try-catch use
 		try {
 			const existingListItem = await ListItemService.getById(req.body.id);
 
@@ -49,6 +51,7 @@ class ListItemController {
 
 		await ListItemService.create(req.body)
 			.then((id) => {
+				// TODO - Review this idea of updating the Id and returning the object received...
 				listItemToCreate.updateId(id);
 				res.status(201).send({ id: listItemToCreate.getId() });
 			})
@@ -58,6 +61,7 @@ class ListItemController {
 	}
 
 	async patchListItem(req: Request, res: Response, next: NextFunction) {
+		// TODO - This logic should be part of the standard validation at routing level!!!
 		if (
 			req.body.title === undefined &&
 			req.body.description === undefined &&

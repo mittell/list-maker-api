@@ -11,6 +11,7 @@ import { CommonRoutes } from '../common/routes/common.routes';
 import ErrorHandlerMiddleware from '../common/middleware/error.middleware';
 import ValidationMiddleware from '../common/middleware/validation.middleware';
 
+// TODO - Consider alternative implementations for App class
 class App {
 	private routes: Array<RoutesConfig> = [];
 

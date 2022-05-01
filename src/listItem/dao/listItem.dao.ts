@@ -4,6 +4,7 @@ import shortid from 'shortid';
 class ListItemDao {
 	Schema = mongooseService.getMongoose().Schema;
 
+	// TODO - Object only has a Mongoose Schema and no actual Class/Interface of its own!!! - Typegoose?
 	listItemSchema = new this.Schema(
 		{
 			_id: String,
@@ -25,6 +26,7 @@ class ListItemDao {
 			},
 		},
 		{
+			// TODO - Do we want id set to false?
 			id: false,
 			timestamps: true,
 		}
@@ -50,7 +52,7 @@ class ListItemDao {
 		return this.ListItem.findOne({ _id: listItemId }).exec();
 	}
 
-	// Add CreateListItemDto here...
+	// TODO - Reference DTO here instead of any...
 	async addListItem(listItemData: any) {
 		const listItemId = shortid.generate();
 		const listItem = new this.ListItem({
@@ -61,7 +63,7 @@ class ListItemDao {
 		return listItemId;
 	}
 
-	// Add UpdateListItemDto here...
+	// TODO - Reference DTO here instead of any...
 	async updateListItemById(listItemId: string, listItemData: any) {
 		return this.ListItem.findOneAndUpdate(
 			{ _id: listItemId },

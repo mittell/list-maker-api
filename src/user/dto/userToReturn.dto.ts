@@ -1,3 +1,4 @@
+// TODO - Review implementation... consider failed mapping?
 export class UserToReturnDto {
 	id!: string;
 	username!: string;

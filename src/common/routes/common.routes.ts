@@ -9,10 +9,12 @@ export class CommonRoutes extends RoutesConfig {
 	}
 
 	configureRoutes() {
+		// TODO - Update default route to a standard response
 		this.app.get('/', (_req: Request, res: Response) => {
 			res.status(200).send('Hello World!');
 		});
 
+		// TODO - Reconsider implementation of invalid url routing
 		this.app.all(
 			'*',
 			(_req: Request, _res: Response, next: NextFunction) => {

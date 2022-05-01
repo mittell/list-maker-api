@@ -1,3 +1,4 @@
+// TODO - Rename methods?
 export interface CRUD {
 	list: (limit: number, page: number) => Promise<any>;
 	getById: (id: string) => Promise<any>;

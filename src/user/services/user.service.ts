@@ -10,17 +10,17 @@ class UserService implements CRUD {
 		return UserDao.getUserById(id);
 	}
 
-	// Add CreateUserDto here...
+	// TODO - Reference DTO here instead of any...
 	async create(userData: any) {
 		return UserDao.addUser(userData);
 	}
 
-	// Add UpdateUserDto here...
+	// TODO - Reference DTO here instead of any...
 	async putById(id: string, userData: any) {
 		return UserDao.updateUserById(id, userData);
 	}
 
-	// Add UpdateUserDto here...
+	// TODO - Reference DTO here instead of any...
 	async patchById(id: string, userData: any) {
 		return UserDao.updateUserById(id, userData);
 	}

@@ -10,6 +10,7 @@ export class ListRoutes extends RoutesConfig {
 		super(app, 'ListRoutes');
 	}
 
+	// TODO - Review optional and required logic methods from express-validator
 	configureRoutes() {
 		this.app
 			.route(`/api/v1/lists`)
@@ -18,7 +19,7 @@ export class ListRoutes extends RoutesConfig {
 				ValidationMiddleware.validate([
 					body('title').exists().notEmpty(),
 					body('description').exists().notEmpty(),
-					body('userId').exists().notEmpty(), // Will need another middleware to check for valid userId
+					body('userId').exists().notEmpty(), // TODO - UserId needs to be validated somewhere?
 				]),
 				ListController.createList
 			);
@@ -31,7 +32,7 @@ export class ListRoutes extends RoutesConfig {
 				ValidationMiddleware.validate([
 					body('title').exists().notEmpty(),
 					body('description').exists().notEmpty(),
-					body('userId').exists().notEmpty(), // Will need another middleware to check for valid userId
+					body('userId').exists().notEmpty(), // TODO - UserId needs to be validated somewhere?
 				]),
 				ListController.putList
 			)
@@ -41,7 +42,7 @@ export class ListRoutes extends RoutesConfig {
 					body('description')
 						.if(body('description').exists())
 						.notEmpty(),
-					body('userId').if(body('userId').exists()).notEmpty(), // Will need another middleware to check for valid userId
+					body('userId').if(body('userId').exists()).notEmpty(), // TODO - UserId needs to be validated somewhere?
 				]),
 				ListController.patchList
 			)

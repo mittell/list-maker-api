@@ -1,3 +1,4 @@
+// TODO - Review additional error situations
 export class ErrorCode {
 	public static readonly Unauthenticated = 'Unauthenticated';
 	public static readonly Unauthorised = 'Unauthorised';

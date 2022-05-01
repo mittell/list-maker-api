@@ -14,17 +14,17 @@ class ListItemService implements CRUD {
 		return ListItemDao.getListItemById(id);
 	}
 
-	// Add CreateListItemDto here...
+	// TODO - Reference DTO here instead of any...
 	async create(listItemData: any) {
 		return ListItemDao.addListItem(listItemData);
 	}
 
-	// Add UpdateListItemDto here...
+	// TODO - Reference DTO here instead of any...
 	async putById(id: string, listItemData: any) {
 		return ListItemDao.updateListItemById(id, listItemData);
 	}
 
-	// Add UpdateListItemDto here...
+	// TODO - Reference DTO here instead of any...
 	async patchById(id: string, listItemData: any) {
 		return ListItemDao.updateListItemById(id, listItemData);
 	}

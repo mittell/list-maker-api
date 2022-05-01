@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { validationResult, ValidationChain } from 'express-validator';
 
+// TODO - Reconsider implementation of validate method...
 export class ValidationMiddleware {
 	validate = (validations: ValidationChain[]) => {
 		return async (req: Request, _res: Response, next: NextFunction) => {

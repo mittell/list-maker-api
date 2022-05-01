@@ -10,17 +10,17 @@ class ListService implements CRUD {
 		return ListDao.getListById(id);
 	}
 
-	// Add CreateListDto here...
+	// TODO - Reference DTO here instead of any!
 	async create(listData: any) {
 		return ListDao.addList(listData);
 	}
 
-	// Add UpdateListDto here...
+	// TODO - Reference DTO here instead of any!
 	async putById(id: string, listData: any) {
 		return ListDao.updateListById(id, listData);
 	}
 
-	// Add UpdateListDto here...
+	// TODO - Reference DTO here instead of any!
 	async patchById(id: string, listData: any) {
 		return ListDao.updateListById(id, listData);
 	}
