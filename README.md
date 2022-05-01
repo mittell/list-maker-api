@@ -86,6 +86,7 @@ Build and run the compiled version with the build and start scripts:
 -   [ ] Add User Password Generation/Comparison Logic
 -   [ ] Add Request Authentication Middleware
 -   [ ] Add JWT Middleware and Authentication Integration
+-   [ ] Add Swagger/OpenAPI Documentation
  
 ## Contact
 
