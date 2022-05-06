@@ -1,53 +1,60 @@
-import express from 'express';
-import { RoutesConfig } from '../../common/types/routes.type';
+import { Application, Router } from 'express';
+import env from '../../config/env.config';
 import ListController from '../controllers/list.controller';
 import ListMiddleware from '../middleware/list.middleware';
 import ValidationMiddleware from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
 
-export class ListRoutes extends RoutesConfig {
-	constructor(app: express.Application) {
-		super(app, 'ListRoutes');
-	}
+export function registerListRoutes(app: Application) {
+	app.use(`/api/${env.API_VERSION || 'v1'}/lists`, listRoutes());
+}
 
-	// TODO - Review optional and required logic methods from express-validator
-	configureRoutes() {
-		this.app
-			.route(`/api/v1/lists`)
-			.get(ListController.getLists)
-			.post(
-				ValidationMiddleware.validate([
-					body('title').exists().notEmpty(),
-					body('description').exists().notEmpty(),
-					body('userId').exists().notEmpty(), // TODO - UserId needs to be validated somewhere?
-				]),
-				ListController.createList
-			);
+export function listRoutes() {
+	const router = Router();
 
-		this.app.param(`listId`, ListMiddleware.extractListId);
-		this.app
-			.route(`/api/v1/lists/:listId`)
-			.get(ListController.getListById)
-			.put(
-				ValidationMiddleware.validate([
-					body('title').exists().notEmpty(),
-					body('description').exists().notEmpty(),
-					body('userId').exists().notEmpty(), // TODO - UserId needs to be validated somewhere?
-				]),
-				ListController.putList
-			)
-			.patch(
-				ValidationMiddleware.validate([
-					body('title').if(body('title').exists()).notEmpty(),
-					body('description')
-						.if(body('description').exists())
-						.notEmpty(),
-					body('userId').if(body('userId').exists()).notEmpty(), // TODO - UserId needs to be validated somewhere?
-				]),
-				ListController.patchList
-			)
-			.delete(ListController.removeList);
+	router.get('/', ListController.getLists);
+	router.post(
+		'/',
+		ValidationMiddleware.validate([
+			body('title').exists().notEmpty(),
+			body('description').exists().notEmpty(),
+			body('userId').exists().notEmpty(), // TODO - UserId needs to be validated somewhere?
+		]),
+		ListController.createList
+	);
 
-		return this.app;
-	}
+	router.get(
+		'/:listId',
+		ListMiddleware.extractListId,
+		ListController.getListById
+	);
+	router.put(
+		'/:listId',
+		ListMiddleware.extractListId,
+		ValidationMiddleware.validate([
+			body('title').exists().notEmpty(),
+			body('description').exists().notEmpty(),
+			body('userId').exists().notEmpty(), // TODO - UserId needs to be validated somewhere?
+		]),
+		ListController.putList
+	);
+
+	router.patch(
+		'/:listId',
+		ListMiddleware.extractListId,
+		ValidationMiddleware.validate([
+			body('title').if(body('title').exists()).notEmpty(),
+			body('description').if(body('description').exists()).notEmpty(),
+			body('userId').if(body('userId').exists()).notEmpty(), // TODO - UserId needs to be validated somewhere?
+		]),
+		ListController.patchList
+	);
+
+	router.delete(
+		'/:listId',
+		ListMiddleware.extractListId,
+		ListController.removeList
+	);
+
+	return router;
 }

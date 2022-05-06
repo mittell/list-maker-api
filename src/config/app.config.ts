@@ -11,6 +11,9 @@ import {
 	handleErrors,
 	handleInvalidUrl,
 } from '../common/middleware/error.middleware';
+import { registerListRoutes } from '../list/routes/list.routes';
+import { registerListItemRoutes } from '../listItem/routes/listItem.routes';
+import { registerUserRoutes } from '../user/routes/user.routes';
 
 export class App {
 	public app: Application;
@@ -45,9 +48,9 @@ export class App {
 
 	public async registerRoutes() {
 		registerCommonRoutes(this.app);
-		// registerListRoutes(this.app);
-		// registerListItemRoutes(this.app);
-		// registerUserRoutes(this.app);
+		registerListRoutes(this.app);
+		registerListItemRoutes(this.app);
+		registerUserRoutes(this.app);
 		console.log('Routes registered...');
 	}
 
