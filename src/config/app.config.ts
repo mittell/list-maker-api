@@ -1,64 +1,16 @@
 import 'dotenv/config';
-import config from '../config/env.config';
+import env from '../config/env.config';
 import express, { Application } from 'express';
 import { Server } from 'http';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import helmet from 'helmet';
 import * as Sentry from '@sentry/node';
-
-// import { RoutesConfig } from '../common/types/routes.type';
-// import { ListRoutes } from '../list/routes/list.routes';
-// import { ListItemRoutes } from '../listItem/routes/listItem.routes';
-// import { UserRoutes } from '../user/routes/user.routes';
-// import { CommonRoutes } from '../common/routes/common.routes';
-// import ErrorHandlerMiddleware from '../common/middleware/error.middleware';
-// import ValidationMiddleware from '../common/middleware/validation.middleware';
-
-// TODO - Consider alternative implementations for App class
-// class App {
-// 	private routes: Array<RoutesConfig> = [];
-
-// 	public app: express.Application;
-
-// 	constructor() {
-// 		this.app = express();
-// 		this.config();
-// 		this.registerRoutes();
-// 		this.registerMiddleware();
-// 	}
-
-// 	private config(): void {
-// 		this.app.use(bodyParser.json());
-// 		this.app.use(bodyParser.urlencoded({ extended: false }));
-// 		this.app.use(cors());
-// 		this.app.use(helmet());
-// 	}
-
-// 	private registerRoutes(): void {
-// 		const listRoutes = new ListRoutes(this.app);
-// 		const listItemRoutes = new ListItemRoutes(this.app);
-// 		const userRoutes = new UserRoutes(this.app);
-// 		const commonRoutes = new CommonRoutes(this.app);
-
-// 		this.routes.push(listRoutes);
-// 		this.routes.push(listItemRoutes);
-// 		this.routes.push(userRoutes);
-// 		this.routes.push(commonRoutes);
-
-// 		this.routes.forEach((route: RoutesConfig) => {
-// 			console.log(`Routes configured for ${route.getName()}`);
-// 		});
-// 	}
-
-// 	private registerMiddleware(): void {
-// 		this.app.use(ErrorHandlerMiddleware.handleError);
-// 		this.app.use(ValidationMiddleware.validate);
-// 		console.log(`Middleware registered...`);
-// 	}
-// }
-
-// export default new App().app;
+import { registerCommonRoutes } from '../common/routes/common.routes';
+import {
+	handleErrors,
+	handleInvalidUrl,
+} from '../common/middleware/error.middleware';
 
 export class App {
 	public app: Application;
@@ -68,12 +20,12 @@ export class App {
 	constructor() {
 		this.app = express();
 		this.server = new Server();
-		this.port = config.PORT;
+		this.port = env.PORT;
 	}
 
 	public async initialiseLoggers() {
 		Sentry.init({
-			dsn: config.SENTRY_URL,
+			dsn: env.SENTRY_URL,
 			tracesSampleRate: 1.0,
 		});
 
@@ -92,7 +44,7 @@ export class App {
 	}
 
 	public async registerRoutes() {
-		// registerCommonRoutes(this.app);
+		registerCommonRoutes(this.app);
 		// registerListRoutes(this.app);
 		// registerListItemRoutes(this.app);
 		// registerUserRoutes(this.app);
@@ -103,8 +55,8 @@ export class App {
 		// NOT NEEDED HERE
 		// this.app.use(validateRequest);
 		// this.app.use(validateBody);
-		// this.app.use(handleInvalidUrl;
-		// this.app.use(handleErrors);
+		this.app.use(handleInvalidUrl);
+		this.app.use(handleErrors);
 		console.log('Middleware registered...');
 	}
 
@@ -112,7 +64,7 @@ export class App {
 		return new Promise<void>((resolve) => {
 			this.server = this.app.listen(this.port, resolve);
 			console.log(`Server listening on port ${this.port}...`);
-			console.log(`Environment - ${config.NODE_ENV}`);
+			console.log(`Environment - ${env.NODE_ENV}`);
 		});
 	}
 
