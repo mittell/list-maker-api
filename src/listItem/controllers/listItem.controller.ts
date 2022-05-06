@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ErrorCode } from '../../common/models/errorCode.model';
-import { ErrorException } from '../../common/models/errorException.model';
+import { NotFoundError, ValidationError } from '../../common/types/error.type';
 import { ListItemToCreateDto } from '../dto/listItemToCreate.dto';
 import { ListItemToReturnDto } from '../dto/listItemToReturn.dto';
 import { ListItemToUpdateDto } from '../dto/listItemToUpdate.dto';
@@ -32,7 +31,7 @@ class ListItemController {
 			const existingListItem = await ListItemService.getById(req.body.id);
 
 			if (!existingListItem) {
-				next(new ErrorException(ErrorCode.NotFound));
+				next(new NotFoundError());
 			}
 
 			let listItemToReturn: ListItemToReturnDto =
@@ -67,7 +66,7 @@ class ListItemController {
 			req.body.description === undefined &&
 			req.body.userId === undefined
 		) {
-			next(new ErrorException(ErrorCode.ValidationError));
+			next(new ValidationError());
 		}
 
 		let listItemToUpdate: ListItemToUpdateDto = new ListItemToUpdateDto();
@@ -99,7 +98,7 @@ class ListItemController {
 		const existingListItem = await ListItemService.getById(req.body.id);
 
 		if (!existingListItem) {
-			next(new ErrorException(ErrorCode.NotFound));
+			next(new NotFoundError());
 		}
 
 		await ListItemService.deleteById(existingListItem._id)

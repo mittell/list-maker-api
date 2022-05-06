@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ErrorCode } from '../../common/models/errorCode.model';
-import { ErrorException } from '../../common/models/errorException.model';
+import { NotFoundError, ValidationError } from '../../common/types/error.type';
 import { UserToCreateDto } from '../dto/userToCreate.dto';
 import { UserToReturnDto } from '../dto/userToReturn.dto';
 import { UserToUpdateDto } from '../dto/userToUpdate.dto';
@@ -32,7 +31,7 @@ class UserController {
 			const existingUser = await UserService.getById(req.body.id);
 
 			if (!existingUser) {
-				next(new ErrorException(ErrorCode.NotFound));
+				next(new NotFoundError());
 			}
 
 			let userToReturn: UserToReturnDto = new UserToReturnDto();
@@ -68,7 +67,7 @@ class UserController {
 			req.body.email === undefined &&
 			req.body.password === undefined
 		) {
-			next(new ErrorException(ErrorCode.ValidationError));
+			next(new ValidationError());
 		}
 
 		let userToUpdate: UserToUpdateDto = new UserToUpdateDto();
@@ -106,7 +105,7 @@ class UserController {
 		const existingUser = await UserService.getById(req.body.id);
 
 		if (!existingUser) {
-			next(new ErrorException(ErrorCode.NotFound));
+			next(new NotFoundError());
 		}
 
 		await UserService.deleteById(existingUser._id)

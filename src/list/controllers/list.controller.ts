@@ -1,11 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import ListService from '../services/list.service';
 import ListItemService from '../../listItem/services/listItem.service';
-import { ErrorException } from '../../common/models/errorException.model';
-import { ErrorCode } from '../../common/models/errorCode.model';
 import { ListToReturnDto } from '../dto/listToReturn.dto';
 import { ListToCreateDto } from '../dto/listToCreate.dto';
 import { ListToUpdateDto } from '../dto/listToUpdate.dto';
+import { NotFoundError, ValidationError } from '../../common/types/error.type';
 
 class ListController {
 	async getLists(req: Request, res: Response, next: NextFunction) {
@@ -43,7 +42,7 @@ class ListController {
 			const existingList = await ListService.getById(req.body.id);
 
 			if (!existingList) {
-				next(new ErrorException(ErrorCode.NotFound));
+				next(new NotFoundError());
 			}
 
 			let listToReturn: ListToReturnDto = new ListToReturnDto();
@@ -85,7 +84,7 @@ class ListController {
 			req.body.description === undefined &&
 			req.body.userId === undefined
 		) {
-			next(new ErrorException(ErrorCode.ValidationError));
+			next(new ValidationError());
 		}
 
 		let listToUpdate: ListToUpdateDto = new ListToUpdateDto();
@@ -117,7 +116,7 @@ class ListController {
 		const existingList = await ListService.getById(req.body.id);
 
 		if (!existingList) {
-			next(new ErrorException(ErrorCode.NotFound));
+			next(new NotFoundError());
 		}
 
 		await ListService.deleteById(existingList._id)
