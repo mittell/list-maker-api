@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { NotFoundError, ValidationError } from '../../common/types/error.type';
+import { NotFoundError } from '../../common/types/error.type';
 import { ListItemToCreateDto } from '../dto/listItemToCreate.dto';
 import { ListItemToReturnDto } from '../dto/listItemToReturn.dto';
 import { ListItemToUpdateDto } from '../dto/listItemToUpdate.dto';
@@ -60,15 +60,6 @@ class ListItemController {
 	}
 
 	async patchListItem(req: Request, res: Response, next: NextFunction) {
-		// TODO - This logic should be part of the standard validation at routing level!!!
-		if (
-			req.body.title === undefined &&
-			req.body.description === undefined &&
-			req.body.userId === undefined
-		) {
-			next(new ValidationError('null', 'null'));
-		}
-
 		let listItemToUpdate: ListItemToUpdateDto = new ListItemToUpdateDto();
 		listItemToUpdate.mapListItemFromRequest(req.body);
 

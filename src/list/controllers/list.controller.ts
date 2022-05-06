@@ -4,7 +4,7 @@ import ListItemService from '../../listItem/services/listItem.service';
 import { ListToReturnDto } from '../dto/listToReturn.dto';
 import { ListToCreateDto } from '../dto/listToCreate.dto';
 import { ListToUpdateDto } from '../dto/listToUpdate.dto';
-import { NotFoundError, ValidationError } from '../../common/types/error.type';
+import { NotFoundError } from '../../common/types/error.type';
 
 class ListController {
 	async getLists(req: Request, res: Response, next: NextFunction) {
@@ -78,15 +78,6 @@ class ListController {
 	}
 
 	async patchList(req: Request, res: Response, next: NextFunction) {
-		// TODO - This logic should be part of the standard validation at routing level!!!
-		if (
-			req.body.title === undefined &&
-			req.body.description === undefined &&
-			req.body.userId === undefined
-		) {
-			next(new ValidationError('null', 'null'));
-		}
-
 		let listToUpdate: ListToUpdateDto = new ListToUpdateDto();
 		listToUpdate.mapListFromRequest(req.body);
 

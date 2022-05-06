@@ -2,7 +2,10 @@ import { Application, Router } from 'express';
 import env from '../../config/env.config';
 import UserController from '../controllers/user.controller';
 import { extractUserId } from '../middleware/user.middleware';
-import { validateRequest } from '../../common/middleware/validation.middleware';
+import {
+	validateBody,
+	validateRequest,
+} from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
 
 export function registerUserRoutes(app: Application) {
@@ -42,6 +45,7 @@ export function userRoutes() {
 	router.patch(
 		'/:userId',
 		extractUserId,
+		validateBody(),
 		validateRequest([
 			body('username').if(body('username').exists()).notEmpty(),
 			body('email').if(body('email').exists()).notEmpty().isEmail(),

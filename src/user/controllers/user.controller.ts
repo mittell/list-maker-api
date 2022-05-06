@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { NotFoundError, ValidationError } from '../../common/types/error.type';
+import { NotFoundError } from '../../common/types/error.type';
 import { UserToCreateDto } from '../dto/userToCreate.dto';
 import { UserToReturnDto } from '../dto/userToReturn.dto';
 import { UserToUpdateDto } from '../dto/userToUpdate.dto';
@@ -61,15 +61,6 @@ class UserController {
 
 	// TODO - Endpoint will need authentication, so only the user can get update own details?
 	async patchUser(req: Request, res: Response, next: NextFunction) {
-		// TODO - This logic should be part of the standard validation at routing level!!!
-		if (
-			req.body.username === undefined &&
-			req.body.email === undefined &&
-			req.body.password === undefined
-		) {
-			next(new ValidationError('null', 'null'));
-		}
-
 		let userToUpdate: UserToUpdateDto = new UserToUpdateDto();
 		userToUpdate.mapFromRequest(req.body);
 

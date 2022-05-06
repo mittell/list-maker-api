@@ -2,7 +2,7 @@ import { Application, Router } from 'express';
 import env from '../../config/env.config';
 import ListItemController from '../controllers/listItem.controller';
 import { extractListItemId } from '../middleware/listItem.middleware';
-import { validateRequest } from '../../common/middleware/validation.middleware';
+import { validateBody, validateRequest } from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
 
 export function registerListItemRoutes(app: Application) {
@@ -44,6 +44,7 @@ export function listItemRoutes() {
 	router.patch(
 		'/:listItemId',
 		extractListItemId,
+		validateBody(),
 		validateRequest([
 			body('title').if(body('title').exists()).notEmpty(),
 			body('description').if(body('description').exists()).notEmpty(),
