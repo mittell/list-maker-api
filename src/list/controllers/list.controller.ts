@@ -84,7 +84,7 @@ class ListController {
 			req.body.description === undefined &&
 			req.body.userId === undefined
 		) {
-			next(new ValidationError());
+			next(new ValidationError('null', 'null'));
 		}
 
 		let listToUpdate: ListToUpdateDto = new ListToUpdateDto();

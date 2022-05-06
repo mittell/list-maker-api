@@ -67,7 +67,7 @@ class UserController {
 			req.body.email === undefined &&
 			req.body.password === undefined
 		) {
-			next(new ValidationError());
+			next(new ValidationError('null', 'null'));
 		}
 
 		let userToUpdate: UserToUpdateDto = new UserToUpdateDto();
