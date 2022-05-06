@@ -1,5 +1,5 @@
 import { Application, Request, Response, NextFunction } from 'express';
-import { RoutesConfig } from '../config/routes.config';
+import { RoutesConfig } from '../types/routes.type';
 import { ErrorCode } from '../models/errorCode.model';
 import { ErrorException } from '../models/errorException.model';
 

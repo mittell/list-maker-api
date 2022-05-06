@@ -1,5 +1,5 @@
 import express from 'express';
-import { RoutesConfig } from '../../common/config/routes.config';
+import { RoutesConfig } from '../../common/types/routes.type';
 import UserController from '../controllers/user.controller';
 import UserMiddleware from '../middleware/user.middleware';
 import ValidationMiddleware from '../../common/middleware/validation.middleware';
