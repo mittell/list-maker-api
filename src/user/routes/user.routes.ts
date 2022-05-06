@@ -1,8 +1,8 @@
 import { Application, Router } from 'express';
 import env from '../../config/env.config';
 import UserController from '../controllers/user.controller';
-import UserMiddleware from '../middleware/user.middleware';
-import ValidationMiddleware from '../../common/middleware/validation.middleware';
+import { extractUserId } from '../middleware/user.middleware';
+import { validateRequest } from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
 
 export function registerUserRoutes(app: Application) {
@@ -15,7 +15,7 @@ export function userRoutes() {
 	router.get('/', UserController.getUsers); // TODO - Remove
 	router.post(
 		'/',
-		ValidationMiddleware.validate([
+		validateRequest([
 			body('username').exists().notEmpty(),
 			body('email').exists().notEmpty().isEmail(),
 			body('password').exists().notEmpty().isLength({ min: 6 }),
@@ -25,13 +25,13 @@ export function userRoutes() {
 
 	router.get(
 		'/:userId',
-		UserMiddleware.extractUserId,
+		extractUserId,
 		UserController.getUserById // TODO - Needs authentication!
 	);
 	router.put(
 		'/:userId',
-		UserMiddleware.extractUserId,
-		ValidationMiddleware.validate([
+		extractUserId,
+		validateRequest([
 			body('username').exists().notEmpty(),
 			body('email').exists().notEmpty().isEmail(),
 			body('password').exists().notEmpty().isLength({ min: 6 }),
@@ -41,8 +41,8 @@ export function userRoutes() {
 
 	router.patch(
 		'/:userId',
-		UserMiddleware.extractUserId,
-		ValidationMiddleware.validate([
+		extractUserId,
+		validateRequest([
 			body('username').if(body('username').exists()).notEmpty(),
 			body('email').if(body('email').exists()).notEmpty().isEmail(),
 			body('password')
@@ -55,7 +55,7 @@ export function userRoutes() {
 
 	router.delete(
 		'/:userId',
-		UserMiddleware.extractUserId,
+		extractUserId,
 		UserController.removeUser // TODO - Remove?
 	);
 

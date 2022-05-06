@@ -1,8 +1,8 @@
 import { Application, Router } from 'express';
 import env from '../../config/env.config';
 import ListController from '../controllers/list.controller';
-import ListMiddleware from '../middleware/list.middleware';
-import ValidationMiddleware from '../../common/middleware/validation.middleware';
+import { extractListId } from '../middleware/list.middleware';
+import { validateRequest } from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
 
 export function registerListRoutes(app: Application) {
@@ -15,7 +15,7 @@ export function listRoutes() {
 	router.get('/', ListController.getLists);
 	router.post(
 		'/',
-		ValidationMiddleware.validate([
+		validateRequest([
 			body('title').exists().notEmpty(),
 			body('description').exists().notEmpty(),
 			body('userId').exists().notEmpty(), // TODO - UserId needs to be validated somewhere?
@@ -23,15 +23,11 @@ export function listRoutes() {
 		ListController.createList
 	);
 
-	router.get(
-		'/:listId',
-		ListMiddleware.extractListId,
-		ListController.getListById
-	);
+	router.get('/:listId', extractListId, ListController.getListById);
 	router.put(
 		'/:listId',
-		ListMiddleware.extractListId,
-		ValidationMiddleware.validate([
+		extractListId,
+		validateRequest([
 			body('title').exists().notEmpty(),
 			body('description').exists().notEmpty(),
 			body('userId').exists().notEmpty(), // TODO - UserId needs to be validated somewhere?
@@ -41,8 +37,8 @@ export function listRoutes() {
 
 	router.patch(
 		'/:listId',
-		ListMiddleware.extractListId,
-		ValidationMiddleware.validate([
+		extractListId,
+		validateRequest([
 			body('title').if(body('title').exists()).notEmpty(),
 			body('description').if(body('description').exists()).notEmpty(),
 			body('userId').if(body('userId').exists()).notEmpty(), // TODO - UserId needs to be validated somewhere?
@@ -50,11 +46,7 @@ export function listRoutes() {
 		ListController.patchList
 	);
 
-	router.delete(
-		'/:listId',
-		ListMiddleware.extractListId,
-		ListController.removeList
-	);
+	router.delete('/:listId', extractListId, ListController.removeList);
 
 	return router;
 }

@@ -1,15 +1,10 @@
-// TODO - Review implementation and potential duplication...
-import express from 'express';
+import { Request, Response, NextFunction } from 'express';
 
-class ListItemMiddleware {
-	async extractListItemId(
-		req: express.Request,
-		_res: express.Response,
-		next: express.NextFunction
-	) {
-		req.body.id = req.params.listItemId;
-		next();
-	}
+export function extractListItemId(
+	req: Request,
+	_res: Response,
+	next: NextFunction
+): void {
+	req.body.id = req.params.listItemId;
+	next();
 }
-
-export default new ListItemMiddleware();

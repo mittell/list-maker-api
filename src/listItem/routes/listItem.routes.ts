@@ -1,8 +1,8 @@
 import { Application, Router } from 'express';
 import env from '../../config/env.config';
 import ListItemController from '../controllers/listItem.controller';
-import ListItemMiddleware from '../middleware/listItem.middleware';
-import ValidationMiddleware from '../../common/middleware/validation.middleware';
+import { extractListItemId } from '../middleware/listItem.middleware';
+import { validateRequest } from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
 
 export function registerListItemRoutes(app: Application) {
@@ -15,7 +15,7 @@ export function listItemRoutes() {
 	router.get('/', ListItemController.getListItems);
 	router.post(
 		'/',
-		ValidationMiddleware.validate([
+		validateRequest([
 			body('title').exists().notEmpty(),
 			body('description').exists().notEmpty(),
 			body('isComplete').if(body('isComplete').exists()).isBoolean(),
@@ -26,13 +26,13 @@ export function listItemRoutes() {
 
 	router.get(
 		'/:listItemId',
-		ListItemMiddleware.extractListItemId,
+		extractListItemId,
 		ListItemController.getListItemById
 	);
 	router.put(
 		'/:listItemId',
-		ListItemMiddleware.extractListItemId,
-		ValidationMiddleware.validate([
+		extractListItemId,
+		validateRequest([
 			body('title').exists().notEmpty(),
 			body('description').exists().notEmpty(),
 			body('isComplete').if(body('isComplete').exists()).isBoolean(),
@@ -43,8 +43,8 @@ export function listItemRoutes() {
 
 	router.patch(
 		'/:listItemId',
-		ListItemMiddleware.extractListItemId,
-		ValidationMiddleware.validate([
+		extractListItemId,
+		validateRequest([
 			body('title').if(body('title').exists()).notEmpty(),
 			body('description').if(body('description').exists()).notEmpty(),
 			body('isComplete').if(body('isComplete').exists()).isBoolean(),
@@ -55,7 +55,7 @@ export function listItemRoutes() {
 
 	router.delete(
 		'/:listItemId',
-		ListItemMiddleware.extractListItemId,
+		extractListItemId,
 		ListItemController.removeListItem
 	);
 
