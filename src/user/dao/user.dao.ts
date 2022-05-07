@@ -1,8 +1,8 @@
-import mongooseService from '../../common/services/mongoose.service';
+import mongoose from 'mongoose';
 import shortid from 'shortid';
 
 class UserDao {
-	Schema = mongooseService.getMongoose().Schema;
+	Schema = mongoose.Schema;
 
 	// TODO - Object only has a Mongoose Schema and no actual Class/Interface of its own!!! - Typegoose?
 	userSchema = new this.Schema(
@@ -29,11 +29,9 @@ class UserDao {
 		}
 	);
 
-	User = mongooseService.getMongoose().model('User', this.userSchema);
+	User = mongoose.model('User', this.userSchema);
 
-	constructor() {
-		console.log('Created a new instance of UserDao');
-	}
+	constructor() {}
 
 	async getUsers() {
 		return this.User.find().exec();

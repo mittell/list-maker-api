@@ -14,13 +14,13 @@ import {
 import { registerListRoutes } from '../list/routes/list.routes';
 import { registerListItemRoutes } from '../listItem/routes/listItem.routes';
 import { registerUserRoutes } from '../user/routes/user.routes';
-
-// TODO - Add database connection and stop processes here
+import mongoose, { Connection } from 'mongoose';
 
 export class App {
 	public app: Application;
 	public server: Server;
 	public port: number;
+	public mongooseConnection!: Connection;
 
 	constructor() {
 		this.app = express();
@@ -79,5 +79,32 @@ export class App {
 				resolve();
 			});
 		});
+	}
+
+	public async startMongooseConnection() {
+		const retrySeconds = 5;
+		const mongooseOptions = {
+			serverSelectionTimeoutMS: 5000,
+		};
+
+		this.mongooseConnection = mongoose.connection;
+
+		console.log('Attempting MongoDB connection...');
+		await mongoose
+			.connect(env.MONGO_URL, mongooseOptions)
+			.then(() => {
+				console.log('MongoDB successfully connected!');
+			})
+			.catch((error) => {
+				console.log(
+					`MongoDB connection was unsuccessful... will retry after ${retrySeconds} seconds:`,
+					error
+				);
+				Sentry.captureException(error);
+			});
+	}
+
+	public async stopMongooseConnection() {
+		await this.mongooseConnection.close();
 	}
 }

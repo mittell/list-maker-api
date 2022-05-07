@@ -1,8 +1,8 @@
-import mongooseService from '../../common/services/mongoose.service';
+import mongoose from 'mongoose';
 import shortid from 'shortid';
 
 class ListDao {
-	Schema = mongooseService.getMongoose().Schema;
+	Schema = mongoose.Schema;
 
 	// TODO - Object only has a Mongoose Schema and no actual Class/Interface of its own!!! - Typegoose?
 	listSchema = new this.Schema(
@@ -28,11 +28,9 @@ class ListDao {
 		}
 	);
 
-	List = mongooseService.getMongoose().model('List', this.listSchema);
+	List = mongoose.model('List', this.listSchema);
 
-	constructor() {
-		console.log('Created a new instance of ListsDao');
-	}
+	constructor() {}
 
 	// TODO - Set limit and page defaults elsewhere?
 	async getLists(limit = 10, page = 0) {
