@@ -9,7 +9,7 @@ import {
 import { body } from 'express-validator';
 
 export function registerUserRoutes(app: Application) {
-	app.use(`/api/${env.API_VERSION || 'v1'}/users`, userRoutes());
+	app.use(`/api/${env.API_VERSION}/users`, userRoutes());
 }
 
 export function userRoutes() {

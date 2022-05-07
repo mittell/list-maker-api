@@ -1,4 +1,3 @@
-// TODO - Consider alternative implementations of environment variables in TypeScript
 interface ENV {
 	PORT: number | undefined;
 	SENTRY_URL: string | undefined;

@@ -9,7 +9,7 @@ import {
 import { body } from 'express-validator';
 
 export function registerListRoutes(app: Application) {
-	app.use(`/api/${env.API_VERSION || 'v1'}/lists`, listRoutes());
+	app.use(`/api/${env.API_VERSION}/lists`, listRoutes());
 }
 
 export function listRoutes() {
