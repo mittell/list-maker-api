@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import { validationResult, ValidationChain } from 'express-validator';
 import { ValidationError } from '../types/error.type';
 
+// TODO - Consider matchedData() to check for invalid data? i.e incorrect fields being submitted and accepted
+
 export function validateRequest(validations: ValidationChain[]) {
 	return async (req: Request, _res: Response, next: NextFunction) => {
 		await Promise.all(
