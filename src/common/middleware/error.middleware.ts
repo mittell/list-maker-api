@@ -13,8 +13,6 @@ import {
 	ValidationError,
 } from '../types/error.type';
 
-// TODO - Update error response formatting
-
 export function handleInvalidUrl(req: Request, res: Response): void {
 	res.status(404).json({
 		status: 404,
@@ -42,67 +40,60 @@ export function handleErrors(
 		res.status(error.status).json({
 			status: error.status,
 			name: error.name,
-			message: error.name,
-			// ...(error.message ? { message: error.message } : {}),
+			...(error.message ? { message: error.message } : {}),
 		});
 	} else if (error instanceof InternalServerError) {
 		res.status(error.status).json({
 			status: error.status,
 			name: error.name,
-			message: error.name,
-			// ...(error.message ? { message: error.message } : {}),
-			// ...(error.error && env.NODE_ENV === EnvType.DEV
-			// 	? { error: error.error }
-			// 	: {}),
+			...(error.message ? { message: error.message } : {}),
+			...(error.error && env.NODE_ENV === ProcessEnv.DEV
+				? { error: error.error }
+				: {}),
 		});
 	} else if (error instanceof ValidationError) {
 		res.status(error.status).json({
 			status: error.status,
 			name: error.name,
-			message: error.name,
-			// ...(error.message ? { message: error.message } : {}),
-			// ...(error.errors.length ? { errors: error.errors } : {}),
+			...(error.message ? { message: error.message } : {}),
+			...(error.errors.length ? { details: error.errors } : {}),
 		});
 	} else if (error instanceof ExpressValidatorError) {
 		res.status(406).json({
 			status: 406,
 			name: 'ExpressValidatorError',
-			message: 'ExpressValidatorError',
-			// detail: error.array(),
-			// ...(env.NODE_ENV === EnvType.DEV ? { error } : {}),
+			message: [
+				...new Set(error.array().map((e) => `${e.param}: ${e.msg}`)),
+			],
 		});
 	} else if (error instanceof MongooseError.ValidationError) {
 		res.status(406).json({
 			status: 406,
 			name: error.name,
-			message: error.name,
-			// ...(error.message
-			// 	? { message: Object.values(error.errors).map((e) => e.message) }
-			// 	: {}),
+			...(error.message
+				? { message: Object.values(error.errors).map((e) => e.message) }
+				: {}),
 		});
 	} else if (error instanceof MongoError) {
 		res.status(500).json({
 			status: 500,
 			name: error.name,
-			message: error.name,
-			// ...(error.message ? { message: error.message } : {}),
-			// ...(env.NODE_ENV === EnvType.DEV ? { error } : {}),
+			...(error.message ? { message: error.message } : {}),
+			...(env.NODE_ENV === ProcessEnv.DEV ? { error } : {}),
 		});
 	} else if (error instanceof SyntaxError) {
 		res.status(406).json({
 			status: 406,
 			name: error.name,
-			message: error.name,
-			// ...(error.message ? { message: error.message } : {}),
-			// ...(env.NODE_ENV === EnvType.DEV ? { error } : {}),
+			...(error.message ? { message: 'Invalid JSON content.' } : {}),
+			// ...(env.NODE_ENV === ProcessEnv.DEV ? { error } : {}),
 		});
 	} else {
 		res.status(error.status || 500).json({
 			status: error.status || 500,
 			name: error.name,
-			message: error.name,
-			// message: 'Unhandled internal server error.',
-			// ...(env.NODE_ENV === EnvType.DEV ? { error } : {}),
+			message: 'Unhandled internal server error.',
+			...(env.NODE_ENV === ProcessEnv.DEV ? { error } : {}),
 		});
 	}
 

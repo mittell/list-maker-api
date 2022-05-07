@@ -1,7 +1,5 @@
 import { HttpStatusCodes } from './httpStatusCode.type';
 
-// TODO - Review error formatting
-
 export class UnauthorizedError extends Error {
 	public readonly status: number;
 
@@ -59,9 +57,7 @@ export class ValidationError extends Error {
 		this.name = this.constructor.name;
 		this.message = message ? message : '';
 		this.errors =
-			error.details && Array.isArray(error.details)
-				? error.details.map((d: any) => d.message)
-				: [];
+			error && Array.isArray(error) ? error.map((d: any) => d) : [];
 	}
 }
 
