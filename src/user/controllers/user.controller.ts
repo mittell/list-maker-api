@@ -66,7 +66,7 @@ class UserController {
 
 		// TODO - Password hashing needed to happen here!!!
 
-		await UserService.patchById(userToUpdate.id, userToUpdate)
+		await UserService.patchById(userToUpdate)
 			.then(() => {
 				res.status(202).send();
 			})
@@ -82,7 +82,7 @@ class UserController {
 
 		// TODO - Password hashing needed to happen here!!!
 
-		await UserService.putById(userToUpdate.id, userToUpdate)
+		await UserService.putById(userToUpdate)
 			.then(() => {
 				res.status(202).send();
 			})
@@ -99,6 +99,7 @@ class UserController {
 			next(new NotFoundError());
 		}
 
+		//@ts-expect-error
 		await UserService.deleteById(existingUser._id)
 			.then(() => {
 				res.status(204).send();

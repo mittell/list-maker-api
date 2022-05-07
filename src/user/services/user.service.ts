@@ -1,7 +1,7 @@
 import UserDao from '../dao/user.dao';
-import { CRUD } from '../../common/interfaces/crud.interface';
+import { IService } from '../../common/interfaces/service.interface';
 
-class UserService implements CRUD {
+class UserService implements IService {
 	async list() {
 		return UserDao.getUsers();
 	}
@@ -10,18 +10,17 @@ class UserService implements CRUD {
 		return UserDao.getUserById(id);
 	}
 
-	// TODO - Reference DTO here instead of any...
 	async create(userData: any) {
 		return UserDao.addUser(userData);
 	}
 
-	// TODO - Reference DTO here instead of any...
-	async putById(id: string, userData: any) {
+	//@ts-expect-error
+	async putById({ id, ...userData }) {
 		return UserDao.updateUserById(id, userData);
 	}
 
-	// TODO - Reference DTO here instead of any...
-	async patchById(id: string, userData: any) {
+	//@ts-expect-error
+	async patchById({ id, ...userData }) {
 		return UserDao.updateUserById(id, userData);
 	}
 

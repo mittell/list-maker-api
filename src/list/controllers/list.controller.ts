@@ -81,7 +81,7 @@ class ListController {
 		let listToUpdate: ListToUpdateDto = new ListToUpdateDto();
 		listToUpdate.mapListFromRequest(req.body);
 
-		await ListService.patchById(listToUpdate.id, listToUpdate)
+		await ListService.patchById(listToUpdate)
 			.then(() => {
 				res.status(204).send();
 			})
@@ -94,7 +94,7 @@ class ListController {
 		let listToUpdate: ListToUpdateDto = new ListToUpdateDto();
 		listToUpdate.mapListFromRequest(req.body);
 
-		await ListService.putById(listToUpdate.id, listToUpdate)
+		await ListService.putById(listToUpdate)
 			.then(() => {
 				res.status(204).send();
 			})
@@ -110,6 +110,7 @@ class ListController {
 			next(new NotFoundError());
 		}
 
+		//@ts-expect-error
 		await ListService.deleteById(existingList._id)
 			.then(() => {
 				res.status(204).send();

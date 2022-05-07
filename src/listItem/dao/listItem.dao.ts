@@ -1,57 +1,50 @@
-import mongoose from 'mongoose';
+import { prop, getModelForClass, modelOptions } from '@typegoose/typegoose';
 import shortid from 'shortid';
 
+@modelOptions({
+	schemaOptions: {
+		_id: true,
+		timestamps: true,
+		toObject: { virtuals: true },
+	},
+})
+class ListItem {
+	@prop()
+	public _id!: string;
+
+	@prop({ type: () => String, required: true })
+	public title!: string;
+
+	@prop({ type: () => String, required: true })
+	public description!: string;
+
+	@prop({ type: () => Boolean, default: false })
+	public isComplete!: string;
+
+	@prop({ type: () => String, required: true })
+	public listId!: string;
+}
+
 class ListItemDao {
-	Schema = mongoose.Schema;
-
-	// TODO - Object only has a Mongoose Schema and no actual Class/Interface of its own!!! - Typegoose?
-	listItemSchema = new this.Schema(
-		{
-			_id: String,
-			title: {
-				type: String,
-				required: true,
-			},
-			description: {
-				type: String,
-				required: true,
-			},
-			isComplete: {
-				type: Boolean,
-				default: false,
-			},
-			listId: {
-				type: String,
-				required: true,
-			},
-		},
-		{
-			// TODO - Do we want id set to false?
-			id: false,
-			timestamps: true,
-		}
-	);
-
-	ListItem = mongoose.model('ListItem', this.listItemSchema);
+	ListItemModel = getModelForClass(ListItem);
 
 	constructor() {}
 
 	async getListItems() {
-		return this.ListItem.find().exec();
+		return this.ListItemModel.find().exec();
 	}
 
 	async getListItemsByListId(listId: string) {
-		return this.ListItem.find({ listId: listId }).exec();
+		return this.ListItemModel.find({ listId: listId }).exec();
 	}
 
 	async getListItemById(listItemId: string) {
-		return this.ListItem.findOne({ _id: listItemId }).exec();
+		return this.ListItemModel.findOne({ _id: listItemId }).exec();
 	}
 
-	// TODO - Reference DTO here instead of any...
 	async addListItem(listItemData: any) {
 		const listItemId = shortid.generate();
-		const listItem = new this.ListItem({
+		const listItem = new this.ListItemModel({
 			_id: listItemId,
 			...listItemData,
 		});
@@ -59,9 +52,8 @@ class ListItemDao {
 		return listItemId;
 	}
 
-	// TODO - Reference DTO here instead of any...
 	async updateListItemById(listItemId: string, listItemData: any) {
-		return this.ListItem.findOneAndUpdate(
+		return this.ListItemModel.findOneAndUpdate(
 			{ _id: listItemId },
 			{ $set: listItemData },
 			{ new: true }
@@ -69,7 +61,7 @@ class ListItemDao {
 	}
 
 	async removeListItemById(listItemId: string) {
-		return this.ListItem.deleteOne({ _id: listItemId }).exec();
+		return this.ListItemModel.deleteOne({ _id: listItemId }).exec();
 	}
 }
 

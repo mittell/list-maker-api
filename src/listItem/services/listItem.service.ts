@@ -1,7 +1,7 @@
 import ListItemDao from '../dao/listItem.dao';
-import { CRUD } from '../../common/interfaces/crud.interface';
+import { IService } from '../../common/interfaces/service.interface';
 
-class ListItemService implements CRUD {
+class ListItemService implements IService {
 	async list() {
 		return ListItemDao.getListItems();
 	}
@@ -14,18 +14,17 @@ class ListItemService implements CRUD {
 		return ListItemDao.getListItemById(id);
 	}
 
-	// TODO - Reference DTO here instead of any...
 	async create(listItemData: any) {
 		return ListItemDao.addListItem(listItemData);
 	}
 
-	// TODO - Reference DTO here instead of any...
-	async putById(id: string, listItemData: any) {
+	//@ts-expect-error
+	async putById({ id, ...listItemData }) {
 		return ListItemDao.updateListItemById(id, listItemData);
 	}
 
-	// TODO - Reference DTO here instead of any...
-	async patchById(id: string, listItemData: any) {
+	//@ts-expect-error
+	async patchById({ id, ...listItemData }) {
 		return ListItemDao.updateListItemById(id, listItemData);
 	}
 

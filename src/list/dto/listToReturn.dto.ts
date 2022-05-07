@@ -10,7 +10,7 @@ export class ListToReturnDto {
 	limit!: number;
 
 	mapListFromDocument(list: any) {
-		this.id = list._id;
+		this.id = list._doc._id;
 		this.title = list.title;
 		this.description = list.description;
 		this.createdAt = list.createdAt;
@@ -21,7 +21,7 @@ export class ListToReturnDto {
 		this.listItems = [];
 		listItems.forEach((item) => {
 			this.listItems.push({
-				id: item._id,
+				id: item._doc._id,
 				title: item.title,
 				description: item.description,
 				isComplete: item.isComplete,

@@ -1,53 +1,47 @@
-import mongoose from 'mongoose';
+import { prop, getModelForClass, modelOptions } from '@typegoose/typegoose';
 import shortid from 'shortid';
 
+@modelOptions({
+	schemaOptions: {
+		_id: true,
+		timestamps: true,
+		toObject: { virtuals: true },
+	},
+})
+class List {
+	@prop()
+	public _id!: string;
+
+	@prop({ type: () => String, required: true })
+	public title!: string;
+
+	@prop({ type: () => String, required: true })
+	public description!: string;
+
+	@prop({ type: () => String, required: true })
+	public userId!: string;
+}
+
 class ListDao {
-	Schema = mongoose.Schema;
-
-	// TODO - Object only has a Mongoose Schema and no actual Class/Interface of its own!!! - Typegoose?
-	listSchema = new this.Schema(
-		{
-			_id: String,
-			title: {
-				type: String,
-				required: true,
-			},
-			description: {
-				type: String,
-				required: true,
-			},
-			userId: {
-				type: String,
-				required: true,
-			},
-		},
-		{
-			// TODO - Do we want id set to false?
-			id: false,
-			timestamps: true,
-		}
-	);
-
-	List = mongoose.model('List', this.listSchema);
+	ListModel = getModelForClass(List);
 
 	constructor() {}
 
 	// TODO - Set limit and page defaults elsewhere?
 	async getLists(limit = 10, page = 0) {
-		return this.List.find()
+		return this.ListModel.find()
 			.limit(limit)
 			.skip(limit * page)
 			.exec();
 	}
 
 	async getListById(listId: string) {
-		return this.List.findOne({ _id: listId }).exec();
+		return this.ListModel.findOne({ _id: listId }).exec();
 	}
 
-	// TODO - Reference DTO here instead of any...
 	async addList(listData: any) {
 		const listId = shortid.generate();
-		const list = new this.List({
+		const list = new this.ListModel({
 			_id: listId,
 			...listData,
 		});
@@ -55,9 +49,8 @@ class ListDao {
 		return listId;
 	}
 
-	// TODO - Reference DTO here instead of any...
 	async updateListById(listId: string, listData: any) {
-		return this.List.findOneAndUpdate(
+		return this.ListModel.findOneAndUpdate(
 			{ _id: listId },
 			{ $set: listData },
 			{ new: true }
@@ -65,7 +58,7 @@ class ListDao {
 	}
 
 	async removeListById(listId: string) {
-		return this.List.deleteOne({ _id: listId }).exec();
+		return this.ListModel.deleteOne({ _id: listId }).exec();
 	}
 }
 

@@ -7,7 +7,7 @@ export class ListItemToReturnDto {
 	listId!: string;
 
 	mapFromDocument(list: any) {
-		this.id = list._id;
+		this.id = list._doc._id;
 		this.title = list.title;
 		this.description = list.description;
 		this.isComplete = list.isComplete;

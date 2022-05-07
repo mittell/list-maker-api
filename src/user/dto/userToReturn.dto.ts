@@ -5,7 +5,7 @@ export class UserToReturnDto {
 	email!: string;
 
 	mapFromDocument(list: any) {
-		this.id = list._id;
+		this.id = list._doc._id;
 		this.username = list.username;
 		this.email = list.email;
 	}
