@@ -1,7 +1,7 @@
 import env from '../../config/env.config';
 import { NextFunction, Request, Response } from 'express';
 import * as Sentry from '@sentry/node';
-import { EnvType } from '../types/env.type';
+import { ProcessEnv } from '../types/env.type';
 import { Error as MongooseError } from 'mongoose';
 import { MongoError } from 'mongodb';
 import { Result as ExpressValidatorError } from 'express-validator';
@@ -12,6 +12,8 @@ import {
 	UnauthorizedError,
 	ValidationError,
 } from '../types/error.type';
+
+// TODO - Update error response formatting
 
 export function handleInvalidUrl(req: Request, res: Response): void {
 	res.status(404).json({
@@ -28,7 +30,7 @@ export function handleErrors(
 	res: Response,
 	next: NextFunction
 ) {
-	if (env.NODE_ENV === EnvType.DEV) {
+	if (env.NODE_ENV === ProcessEnv.DEV) {
 		Sentry.captureException(error);
 	}
 

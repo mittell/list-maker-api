@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import { validationResult, ValidationChain } from 'express-validator';
 import { BadRequestError } from '../types/error.type';
 
+// TODO - Update validateBody response to throw ValidationError?
+
 export function validateRequest(validations: ValidationChain[]) {
 	return async (req: Request, _res: Response, next: NextFunction) => {
 		await Promise.all(

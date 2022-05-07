@@ -2,6 +2,8 @@ import { App } from './config/app.config';
 
 const app = new App();
 
+// TODO - Init and close database connection
+
 (async () => {
 	console.log('================================');
 	await app.start();

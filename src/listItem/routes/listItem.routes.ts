@@ -2,12 +2,17 @@ import { Application, Router } from 'express';
 import env from '../../config/env.config';
 import ListItemController from '../controllers/listItem.controller';
 import { extractListItemId } from '../middleware/listItem.middleware';
-import { validateBody, validateRequest } from '../../common/middleware/validation.middleware';
+import {
+	validateBody,
+	validateRequest,
+} from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
 
 export function registerListItemRoutes(app: Application) {
 	app.use(`/api/${env.API_VERSION || 'v1'}/listItems`, listItemRoutes());
 }
+
+// TODO - Move validation criteria to their own methods?
 
 export function listItemRoutes() {
 	const router = Router();

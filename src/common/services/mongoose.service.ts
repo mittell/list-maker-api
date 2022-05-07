@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 import config from '../../config/env.config';
 import * as Sentry from '@sentry/node';
 
-// TODO - Reconsider connection retry logic
+// TODO - Remove service and init in App configuration and Start process
+
 class MongooseService {
 	private retrySeconds = 5;
 	private mongooseOptions = {

@@ -1,5 +1,7 @@
 import { HttpStatusCodes } from './httpStatusCode.type';
 
+// TODO - Review error formatting
+
 export class UnauthorizedError extends Error {
 	public readonly status: number;
 

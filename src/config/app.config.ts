@@ -15,6 +15,8 @@ import { registerListRoutes } from '../list/routes/list.routes';
 import { registerListItemRoutes } from '../listItem/routes/listItem.routes';
 import { registerUserRoutes } from '../user/routes/user.routes';
 
+// TODO - Add database connection and stop processes here
+
 export class App {
 	public app: Application;
 	public server: Server;
@@ -55,9 +57,6 @@ export class App {
 	}
 
 	public async registerMiddleware() {
-		// NOT NEEDED HERE
-		// this.app.use(validateRequest);
-		// this.app.use(validateBody);
 		this.app.use(handleInvalidUrl);
 		this.app.use(handleErrors);
 		console.log('Middleware registered...');

@@ -8,6 +8,8 @@ import {
 } from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
 
+// TODO - Move validation criteria to their own methods?
+
 export function registerListRoutes(app: Application) {
 	app.use(`/api/${env.API_VERSION || 'v1'}/lists`, listRoutes());
 }

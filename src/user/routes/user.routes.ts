@@ -12,6 +12,8 @@ export function registerUserRoutes(app: Application) {
 	app.use(`/api/${env.API_VERSION || 'v1'}/users`, userRoutes());
 }
 
+// TODO - Move validation criteria to their own methods?
+
 export function userRoutes() {
 	const router = Router();
 
