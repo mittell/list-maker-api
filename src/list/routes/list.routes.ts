@@ -8,8 +8,6 @@ import {
 } from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
 
-// TODO - Move validation criteria to their own methods?
-
 export function registerListRoutes(app: Application) {
 	app.use(`/api/${env.API_VERSION || 'v1'}/lists`, listRoutes());
 }
@@ -20,11 +18,7 @@ export function listRoutes() {
 	router.get('/', ListController.getLists);
 	router.post(
 		'/',
-		validateRequest([
-			body('title').exists().notEmpty(),
-			body('description').exists().notEmpty(),
-			body('userId').exists().notEmpty(), // TODO - UserId needs to be validated somewhere?
-		]),
+		validateRequest(listCreateValidators()),
 		ListController.createList
 	);
 
@@ -32,11 +26,7 @@ export function listRoutes() {
 	router.put(
 		'/:listId',
 		extractListId,
-		validateRequest([
-			body('title').exists().notEmpty(),
-			body('description').exists().notEmpty(),
-			body('userId').exists().notEmpty(), // TODO - UserId needs to be validated somewhere?
-		]),
+		validateRequest(listPutValidators()),
 		ListController.putList
 	);
 
@@ -44,15 +34,35 @@ export function listRoutes() {
 		'/:listId',
 		extractListId,
 		validateBody(),
-		validateRequest([
-			body('title').if(body('title').exists()).notEmpty(),
-			body('description').if(body('description').exists()).notEmpty(),
-			body('userId').if(body('userId').exists()).notEmpty(), // TODO - UserId needs to be validated somewhere?
-		]),
+		validateRequest(listPatchValidators()),
 		ListController.patchList
 	);
 
 	router.delete('/:listId', extractListId, ListController.removeList);
 
 	return router;
+}
+
+function listCreateValidators() {
+	return [
+		body('title').exists().notEmpty(),
+		body('description').exists().notEmpty(),
+		body('userId').exists().notEmpty(), // TODO - UserId needs to be validated somewhere?
+	];
+}
+
+function listPutValidators() {
+	return [
+		body('title').exists().notEmpty(),
+		body('description').exists().notEmpty(),
+		body('userId').exists().notEmpty(), // TODO - UserId needs to be validated somewhere?
+	];
+}
+
+function listPatchValidators() {
+	return [
+		body('title').optional().notEmpty(),
+		body('description').optional().notEmpty(),
+		body('userId').optional().notEmpty(), // TODO - UserId needs to be validated somewhere?
+	];
 }

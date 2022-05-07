@@ -12,20 +12,13 @@ export function registerListItemRoutes(app: Application) {
 	app.use(`/api/${env.API_VERSION || 'v1'}/listItems`, listItemRoutes());
 }
 
-// TODO - Move validation criteria to their own methods?
-
 export function listItemRoutes() {
 	const router = Router();
 
 	router.get('/', ListItemController.getListItems);
 	router.post(
 		'/',
-		validateRequest([
-			body('title').exists().notEmpty(),
-			body('description').exists().notEmpty(),
-			body('isComplete').if(body('isComplete').exists()).isBoolean(),
-			body('listId').exists().notEmpty(), // TODO - ListId needs to be validated somewhere?
-		]),
+		validateRequest(listItemCreateValidators()),
 		ListItemController.createListItem
 	);
 
@@ -37,12 +30,7 @@ export function listItemRoutes() {
 	router.put(
 		'/:listItemId',
 		extractListItemId,
-		validateRequest([
-			body('title').exists().notEmpty(),
-			body('description').exists().notEmpty(),
-			body('isComplete').if(body('isComplete').exists()).isBoolean(),
-			body('listId').exists().notEmpty(), // TODO - ListId needs to be validated somewhere?
-		]),
+		validateRequest(listItemPutValidators()),
 		ListItemController.putListItem
 	);
 
@@ -50,12 +38,7 @@ export function listItemRoutes() {
 		'/:listItemId',
 		extractListItemId,
 		validateBody(),
-		validateRequest([
-			body('title').if(body('title').exists()).notEmpty(),
-			body('description').if(body('description').exists()).notEmpty(),
-			body('isComplete').if(body('isComplete').exists()).isBoolean(),
-			body('listId').if(body('listId').exists()).notEmpty(), // TODO - ListId needs to be validated somewhere?
-		]),
+		validateRequest(listItemPatchValidators()),
 		ListItemController.patchListItem
 	);
 
@@ -66,4 +49,31 @@ export function listItemRoutes() {
 	);
 
 	return router;
+}
+
+function listItemCreateValidators() {
+	return [
+		body('title').exists().notEmpty(),
+		body('description').exists().notEmpty(),
+		body('isComplete').if(body('isComplete').exists()).isBoolean(),
+		body('listId').exists().notEmpty(), // TODO - ListId needs to be validated somewhere?
+	];
+}
+
+function listItemPutValidators() {
+	return [
+		body('title').exists().notEmpty(),
+		body('description').exists().notEmpty(),
+		body('isComplete').if(body('isComplete').exists()).isBoolean(),
+		body('listId').exists().notEmpty(), // TODO - ListId needs to be validated somewhere?
+	];
+}
+
+function listItemPatchValidators() {
+	return [
+		body('title').optional().notEmpty(),
+		body('description').optional().notEmpty(),
+		body('isComplete').optional().isBoolean(),
+		body('listId').optional().notEmpty(), // TODO - ListId needs to be validated somewhere?
+	];
 }

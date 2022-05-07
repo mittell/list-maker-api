@@ -12,19 +12,13 @@ export function registerUserRoutes(app: Application) {
 	app.use(`/api/${env.API_VERSION || 'v1'}/users`, userRoutes());
 }
 
-// TODO - Move validation criteria to their own methods?
-
 export function userRoutes() {
 	const router = Router();
 
 	router.get('/', UserController.getUsers); // TODO - Remove
 	router.post(
 		'/',
-		validateRequest([
-			body('username').exists().notEmpty(),
-			body('email').exists().notEmpty().isEmail(),
-			body('password').exists().notEmpty().isLength({ min: 6 }),
-		]),
+		validateRequest(userCreateValidators()),
 		UserController.createUser
 	);
 
@@ -36,11 +30,7 @@ export function userRoutes() {
 	router.put(
 		'/:userId',
 		extractUserId,
-		validateRequest([
-			body('username').exists().notEmpty(),
-			body('email').exists().notEmpty().isEmail(),
-			body('password').exists().notEmpty().isLength({ min: 6 }),
-		]),
+		validateRequest(userPutValidators()),
 		UserController.putUser // TODO - Needs authentication!
 	);
 
@@ -48,14 +38,7 @@ export function userRoutes() {
 		'/:userId',
 		extractUserId,
 		validateBody(),
-		validateRequest([
-			body('username').if(body('username').exists()).notEmpty(),
-			body('email').if(body('email').exists()).notEmpty().isEmail(),
-			body('password')
-				.if(body('password').exists())
-				.notEmpty()
-				.isLength({ min: 6 }),
-		]),
+		validateRequest(userPatchValidators()),
 		UserController.patchUser // TODO - Needs authentication!
 	);
 
@@ -66,4 +49,28 @@ export function userRoutes() {
 	);
 
 	return router;
+}
+
+function userCreateValidators() {
+	return [
+		body('username').exists().notEmpty(),
+		body('email').exists().notEmpty().isEmail(),
+		body('password').exists().notEmpty().isLength({ min: 6 }),
+	];
+}
+
+function userPutValidators() {
+	return [
+		body('username').exists().notEmpty(),
+		body('email').exists().notEmpty().isEmail(),
+		body('password').exists().notEmpty().isLength({ min: 6 }),
+	];
+}
+
+function userPatchValidators() {
+	return [
+		body('username').optional().notEmpty(),
+		body('email').optional().notEmpty().isEmail(),
+		body('password').optional().notEmpty().isLength({ min: 6 }),
+	];
 }
