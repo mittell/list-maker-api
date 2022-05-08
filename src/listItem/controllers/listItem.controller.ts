@@ -7,12 +7,10 @@ import ListItemService from '../services/listItem.service';
 
 class ListItemController {
 	async getListItems(_req: Request, res: Response, next: NextFunction) {
-		let listItemsToReturn: ListItemToReturnDto[] = [];
-
 		await ListItemService.list()
 			.then((listItems) => {
+				let listItemsToReturn: ListItemToReturnDto[] = [];
 				listItems.forEach((listItem) => {
-					// TODO - Review implementation..
 					let listItemToAdd: ListItemToReturnDto =
 						new ListItemToReturnDto();
 					listItemToAdd.mapFromDocument(listItem);
@@ -26,33 +24,35 @@ class ListItemController {
 	}
 
 	async getListItemById(req: Request, res: Response, next: NextFunction) {
-		// TODO - Remove try-catch use
-		try {
-			const existingListItem = await ListItemService.getById(req.body.id);
+		let listItemId = req.body.id;
 
-			if (!existingListItem) {
-				next(new NotFoundError());
-			}
+		await ListItemService.getById(listItemId)
+			.then((existingListItem) => {
+				if (!existingListItem) {
+					next(new NotFoundError());
+				}
 
-			let listItemToReturn: ListItemToReturnDto =
-				new ListItemToReturnDto();
-			listItemToReturn.mapFromDocument(existingListItem);
+				let listItemToReturn: ListItemToReturnDto =
+					new ListItemToReturnDto();
 
-			res.status(200).send(listItemToReturn);
-		} catch (error) {
-			next(error);
-		}
+				listItemToReturn.mapFromDocument(existingListItem);
+
+				res.status(200).send(listItemToReturn);
+			})
+			.catch((error) => {
+				next(error);
+			});
 	}
 
 	async createListItem(req: Request, res: Response, next: NextFunction) {
 		let listItemToCreate: ListItemToCreateDto = new ListItemToCreateDto();
-		listItemToCreate.mapListItemFromRequest(req.body);
+
+		listItemToCreate.mapFromRequest(req.body);
 
 		await ListItemService.create(req.body)
 			.then((id) => {
-				// TODO - Review this idea of updating the Id and returning the object received...
-				listItemToCreate.updateId(id);
-				res.status(201).send({ id: listItemToCreate.getId() });
+				listItemToCreate.id = id;
+				res.status(201).send({ id: listItemToCreate.id });
 			})
 			.catch((error) => {
 				next(error);
@@ -61,7 +61,8 @@ class ListItemController {
 
 	async patchListItem(req: Request, res: Response, next: NextFunction) {
 		let listItemToUpdate: ListItemToUpdateDto = new ListItemToUpdateDto();
-		listItemToUpdate.mapListItemFromRequest(req.body);
+
+		listItemToUpdate.mapFromRequest(req.body);
 
 		await ListItemService.patchById(listItemToUpdate)
 			.then(() => {
@@ -74,7 +75,8 @@ class ListItemController {
 
 	async putListItem(req: Request, res: Response, next: NextFunction) {
 		let listItemToUpdate: ListItemToUpdateDto = new ListItemToUpdateDto();
-		listItemToUpdate.mapListItemFromRequest(req.body);
+
+		listItemToUpdate.mapFromRequest(req.body);
 
 		await ListItemService.putById(listItemToUpdate)
 			.then(() => {
@@ -86,16 +88,20 @@ class ListItemController {
 	}
 
 	async removeListItem(req: Request, res: Response, next: NextFunction) {
-		const existingListItem = await ListItemService.getById(req.body.id);
+		let listItemId = req.body.id;
 
-		if (!existingListItem) {
-			next(new NotFoundError());
-		}
+		await ListItemService.getById(listItemId)
+			.then(async (existingListItem) => {
+				if (!existingListItem) {
+					next(new NotFoundError());
+				}
 
-		//@ts-expect-error
-		await ListItemService.deleteById(existingListItem._id)
-			.then(() => {
-				res.status(204).send();
+				//@ts-expect-error
+				await ListItemService.deleteById(existingListItem._id).then(
+					() => {
+						res.status(204).send();
+					}
+				);
 			})
 			.catch((error) => {
 				next(error);
