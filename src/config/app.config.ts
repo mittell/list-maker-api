@@ -82,7 +82,6 @@ export class App {
 	}
 
 	public async startMongooseConnection() {
-		const retrySeconds = 5;
 		const mongooseOptions = {
 			serverSelectionTimeoutMS: 5000,
 		};
@@ -96,10 +95,7 @@ export class App {
 				console.log('MongoDB successfully connected!');
 			})
 			.catch((error) => {
-				console.log(
-					`MongoDB connection was unsuccessful... will retry after ${retrySeconds} seconds:`,
-					error
-				);
+				console.log(`MongoDB connection was unsuccessful... `, error);
 				Sentry.captureException(error);
 			});
 	}
