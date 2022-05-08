@@ -8,6 +8,7 @@ import { NotFoundError } from '../../common/types/error.type';
 
 class ListController {
 	async getLists(req: Request, res: Response, next: NextFunction) {
+		// TODO - Need a better way to validate and sanitise this...
 		let page: number = isNaN(req.body.page) ? 0 : req.body.page;
 		let limit: number = isNaN(req.body.limit) ? 10 : req.body.limit;
 
@@ -28,6 +29,7 @@ class ListController {
 
 	async getListById(req: Request, res: Response, next: NextFunction) {
 		let listId = req.body.id;
+		// TODO - Need a better way to validate and sanitise this...
 		let getListItems = req.body.listItems;
 
 		await ListService.getById(listId)
