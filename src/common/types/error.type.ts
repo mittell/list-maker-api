@@ -71,3 +71,14 @@ export class NotFoundError extends Error {
 		this.message = message ? message : '';
 	}
 }
+
+export class MappingError extends Error {
+	public readonly status: number;
+
+	public constructor(message?: string) {
+		super();
+		this.status = HttpStatusCodes.InternalServerError;
+		this.name = this.constructor.name;
+		this.message = message ? message : '';
+	}
+}

@@ -8,22 +8,18 @@ import { NotFoundError } from '../../common/types/error.type';
 
 class ListController {
 	async getLists(req: Request, res: Response, next: NextFunction) {
-		let listsToReturn: ListToReturnDto[] = [];
-
-		// TODO - Consider validation and injection of variables into extended Request class?
-		let limit = parseInt(req.query.limit as string);
-		let page = parseInt(req.query.page as string);
+		let page: number = isNaN(req.body.page) ? 0 : req.body.page;
+		let limit: number = isNaN(req.body.limit) ? 10 : req.body.limit;
 
 		await ListService.list(limit, page)
 			.then((lists) => {
+				let listsToReturn: ListToReturnDto[] = [];
 				lists.forEach((list) => {
-					// TODO - Review implementation... seriously!
 					let listToAdd: ListToReturnDto = new ListToReturnDto();
-					listToAdd.mapListFromDocument(list);
-					listToAdd.updatePageLimit(page, limit);
+					listToAdd.mapFromDocument(list);
 					listsToReturn.push(listToAdd);
 				});
-				res.status(200).send(listsToReturn);
+				res.status(200).send({ page, limit, lists: listsToReturn });
 			})
 			.catch((error) => {
 				next(error);
@@ -31,46 +27,42 @@ class ListController {
 	}
 
 	async getListById(req: Request, res: Response, next: NextFunction) {
-		// TODO - Remove try-catch use
-		try {
-			// TODO - Have listItems value be part of extended Request class? and validated prior?
-			let getListItems =
-				req.query.listItems === 'true' ||
-				req.query.listItems === 'True';
+		let listId = req.body.id;
+		let getListItems = req.body.listItems;
 
-			// TODO - Use .then() promise logic here instead...
-			const existingList = await ListService.getById(req.body.id);
+		await ListService.getById(listId)
+			.then(async (existingList) => {
+				if (!existingList) {
+					next(new NotFoundError());
+				}
 
-			if (!existingList) {
-				next(new NotFoundError());
-			}
+				let listToReturn: ListToReturnDto = new ListToReturnDto();
 
-			let listToReturn: ListToReturnDto = new ListToReturnDto();
+				listToReturn.mapFromDocument(existingList);
 
-			listToReturn.mapListFromDocument(existingList);
+				if (existingList && getListItems) {
+					await ListItemService.listByListId(listId).then(
+						(listItems) => {
+							listToReturn.mapListItemsFromDocument(listItems);
+						}
+					);
+				}
 
-			// TODO - Review implementation
-			if (existingList && getListItems) {
-				listToReturn.mapListItemsFromDocument(
-					await ListItemService.listByListId(req.body.id)
-				);
-			}
-
-			res.status(200).send(listToReturn);
-		} catch (error) {
-			next(error);
-		}
+				res.status(200).send(listToReturn);
+			})
+			.catch((error) => {
+				next(error);
+			});
 	}
 
 	async createList(req: Request, res: Response, next: NextFunction) {
 		let listToCreate: ListToCreateDto = new ListToCreateDto();
-		listToCreate.mapListFromRequest(req.body);
+		listToCreate.mapFromRequest(req.body);
 
 		await ListService.create(listToCreate)
 			.then((id) => {
-				// TODO - Review this idea of updating the Id and returning the object received...
-				listToCreate.updateId(id);
-				res.status(201).send({ id: listToCreate.getId() });
+				listToCreate.id = id;
+				res.status(201).send({ id: listToCreate.id });
 			})
 			.catch((error) => {
 				next(error);
@@ -79,7 +71,7 @@ class ListController {
 
 	async patchList(req: Request, res: Response, next: NextFunction) {
 		let listToUpdate: ListToUpdateDto = new ListToUpdateDto();
-		listToUpdate.mapListFromRequest(req.body);
+		listToUpdate.mapFromRequest(req.body);
 
 		await ListService.patchById(listToUpdate)
 			.then(() => {
@@ -92,7 +84,7 @@ class ListController {
 
 	async putList(req: Request, res: Response, next: NextFunction) {
 		let listToUpdate: ListToUpdateDto = new ListToUpdateDto();
-		listToUpdate.mapListFromRequest(req.body);
+		listToUpdate.mapFromRequest(req.body);
 
 		await ListService.putById(listToUpdate)
 			.then(() => {
@@ -104,7 +96,8 @@ class ListController {
 	}
 
 	async removeList(req: Request, res: Response, next: NextFunction) {
-		const existingList = await ListService.getById(req.body.id);
+		let listId = req.body.id;
+		const existingList = await ListService.getById(listId);
 
 		if (!existingList) {
 			next(new NotFoundError());

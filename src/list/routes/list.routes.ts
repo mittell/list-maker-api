@@ -1,7 +1,11 @@
 import { Application, Router } from 'express';
 import env from '../../config/env.config';
 import ListController from '../controllers/list.controller';
-import { extractListId } from '../middleware/list.middleware';
+import {
+	extractListId,
+	extractListItems,
+	extractPageLimit,
+} from '../middleware/list.middleware';
 import { validateRequest } from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
 
@@ -12,14 +16,19 @@ export function registerListRoutes(app: Application) {
 export function listRoutes() {
 	const router = Router();
 
-	router.get('/', ListController.getLists);
+	router.get('/', extractPageLimit, ListController.getLists);
 	router.post(
 		'/',
 		validateRequest(listCreateValidators()),
 		ListController.createList
 	);
 
-	router.get('/:listId', extractListId, ListController.getListById);
+	router.get(
+		'/:listId',
+		extractListId,
+		extractListItems,
+		ListController.getListById
+	);
 	router.put(
 		'/:listId',
 		extractListId,

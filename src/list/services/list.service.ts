@@ -2,7 +2,7 @@ import ListDao from '../dao/list.dao';
 import { IService } from '../../common/interfaces/service.interface';
 
 class ListService implements IService {
-	async list(limit?: number, page?: number) {
+	async list(limit: number, page: number) {
 		return ListDao.getLists(limit, page);
 	}
 

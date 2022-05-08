@@ -27,8 +27,7 @@ class ListDao {
 
 	constructor() {}
 
-	// TODO - Set limit and page defaults elsewhere?
-	async getLists(limit = 10, page = 0) {
+	async getLists(limit: number, page: number) {
 		return this.ListModel.find()
 			.limit(limit)
 			.skip(limit * page)

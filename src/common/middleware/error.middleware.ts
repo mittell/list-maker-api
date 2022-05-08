@@ -11,6 +11,8 @@ import {
 	UnauthenticatedError,
 	UnauthorizedError,
 	ValidationError,
+	MappingError,
+	NotFoundError,
 } from '../types/error.type';
 
 export function handleInvalidUrl(req: Request, res: Response): void {
@@ -35,7 +37,8 @@ export function handleErrors(
 	if (
 		error instanceof UnauthorizedError ||
 		error instanceof UnauthenticatedError ||
-		error instanceof BadRequestError
+		error instanceof BadRequestError ||
+		error instanceof MappingError
 	) {
 		res.status(error.status).json({
 			status: error.status,
@@ -91,14 +94,20 @@ export function handleErrors(
 		res.status(406).json({
 			status: 406,
 			name: error.name,
-			...(error.message ? { message: 'Invalid JSON content.' } : {}),
+			...(error.message ? { message: 'Invalid JSON content' } : {}),
 			// ...(env.NODE_ENV === ProcessEnv.DEV ? { error } : {}),
+		});
+	} else if (error instanceof NotFoundError) {
+		res.status(404).json({
+			status: 404,
+			name: error.name,
+			message: 'Not Found',
 		});
 	} else {
 		res.status(error.status || 500).json({
 			status: error.status || 500,
 			name: error.name,
-			message: 'Unhandled internal server error.',
+			message: 'Unhandled internal server error',
 			...(env.NODE_ENV === ProcessEnv.DEV ? { error } : {}),
 		});
 	}
