@@ -4,5 +4,6 @@ namespace NodeJS {
 		SENTRY_URL: string;
 		NODE_ENV: string;
 		MONGO_URL: string;
+		API_VERSION: string;
 	}
 }

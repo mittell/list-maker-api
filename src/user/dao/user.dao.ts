@@ -1,50 +1,43 @@
-import mongooseService from '../../common/services/mongoose.service';
+import { prop, getModelForClass, modelOptions } from '@typegoose/typegoose';
 import shortid from 'shortid';
 
+@modelOptions({
+	schemaOptions: {
+		_id: true,
+		timestamps: true,
+		toObject: { virtuals: true },
+	},
+})
+class User {
+	@prop()
+	public _id!: string;
+
+	@prop({ type: () => String, required: true })
+	public username!: string;
+
+	@prop({ type: () => String, required: true })
+	public email!: string;
+
+	@prop({ type: () => String, required: true })
+	public password!: string;
+}
+
 class UserDao {
-	Schema = mongooseService.getMongoose().Schema;
+	UserModel = getModelForClass(User);
 
-	userSchema = new this.Schema(
-		{
-			_id: String,
-			username: {
-				type: String,
-				required: true,
-			},
-			email: {
-				type: String,
-				required: true,
-			},
-			password: {
-				type: String,
-				required: true,
-				min: 6,
-			},
-		},
-		{
-			id: false,
-			timestamps: true,
-		}
-	);
-
-	User = mongooseService.getMongoose().model('User', this.userSchema);
-
-	constructor() {
-		console.log('Created a new instance of UserDao');
-	}
+	constructor() {}
 
 	async getUsers() {
-		return this.User.find().exec();
+		return this.UserModel.find().exec();
 	}
 
 	async getUserById(userId: string) {
-		return this.User.findOne({ _id: userId }).exec();
+		return await this.UserModel.findOne({ _id: userId }).exec();
 	}
 
-	// Add CreateUserDto here...
 	async addUser(userData: any) {
 		const userId = shortid.generate();
-		const User = new this.User({
+		const User = new this.UserModel({
 			_id: userId,
 			...userData,
 		});
@@ -52,9 +45,8 @@ class UserDao {
 		return userId;
 	}
 
-	// Add UpdateUserDto here...
 	async updateUserById(userId: string, userData: any) {
-		return this.User.findOneAndUpdate(
+		return this.UserModel.findOneAndUpdate(
 			{ _id: userId },
 			{ $set: userData },
 			{ new: true }
@@ -62,7 +54,7 @@ class UserDao {
 	}
 
 	async removeUserById(userId: string) {
-		return this.User.deleteOne({ _id: userId }).exec();
+		return this.UserModel.deleteOne({ _id: userId }).exec();
 	}
 }
 

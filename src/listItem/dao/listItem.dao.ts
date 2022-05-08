@@ -1,59 +1,50 @@
-import mongooseService from '../../common/services/mongoose.service';
+import { prop, getModelForClass, modelOptions } from '@typegoose/typegoose';
 import shortid from 'shortid';
 
+@modelOptions({
+	schemaOptions: {
+		_id: true,
+		timestamps: true,
+		toObject: { virtuals: true },
+	},
+})
+class ListItem {
+	@prop()
+	public _id!: string;
+
+	@prop({ type: () => String, required: true })
+	public title!: string;
+
+	@prop({ type: () => String, required: true })
+	public description!: string;
+
+	@prop({ type: () => Boolean, default: false })
+	public isComplete!: string;
+
+	@prop({ type: () => String, required: true })
+	public listId!: string;
+}
+
 class ListItemDao {
-	Schema = mongooseService.getMongoose().Schema;
+	ListItemModel = getModelForClass(ListItem);
 
-	listItemSchema = new this.Schema(
-		{
-			_id: String,
-			title: {
-				type: String,
-				required: true,
-			},
-			description: {
-				type: String,
-				required: true,
-			},
-			isComplete: {
-				type: Boolean,
-				default: false,
-			},
-			listId: {
-				type: String,
-				required: true,
-			},
-		},
-		{
-			id: false,
-			timestamps: true,
-		}
-	);
-
-	ListItem = mongooseService
-		.getMongoose()
-		.model('ListItem', this.listItemSchema);
-
-	constructor() {
-		console.log('Created a new instance of ListItemDao');
-	}
+	constructor() {}
 
 	async getListItems() {
-		return this.ListItem.find().exec();
+		return this.ListItemModel.find().exec();
 	}
 
 	async getListItemsByListId(listId: string) {
-		return this.ListItem.find({ listId: listId }).exec();
+		return this.ListItemModel.find({ listId: listId }).exec();
 	}
 
 	async getListItemById(listItemId: string) {
-		return this.ListItem.findOne({ _id: listItemId }).exec();
+		return this.ListItemModel.findOne({ _id: listItemId }).exec();
 	}
 
-	// Add CreateListItemDto here...
 	async addListItem(listItemData: any) {
 		const listItemId = shortid.generate();
-		const listItem = new this.ListItem({
+		const listItem = new this.ListItemModel({
 			_id: listItemId,
 			...listItemData,
 		});
@@ -61,9 +52,8 @@ class ListItemDao {
 		return listItemId;
 	}
 
-	// Add UpdateListItemDto here...
 	async updateListItemById(listItemId: string, listItemData: any) {
-		return this.ListItem.findOneAndUpdate(
+		return this.ListItemModel.findOneAndUpdate(
 			{ _id: listItemId },
 			{ $set: listItemData },
 			{ new: true }
@@ -71,7 +61,7 @@ class ListItemDao {
 	}
 
 	async removeListItemById(listItemId: string) {
-		return this.ListItem.deleteOne({ _id: listItemId }).exec();
+		return this.ListItemModel.deleteOne({ _id: listItemId }).exec();
 	}
 }
 

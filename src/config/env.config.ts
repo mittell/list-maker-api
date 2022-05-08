@@ -3,6 +3,7 @@ interface ENV {
 	SENTRY_URL: string | undefined;
 	NODE_ENV: string | undefined;
 	MONGO_URL: string | undefined;
+	API_VERSION: string | undefined;
 }
 
 interface Config {
@@ -10,6 +11,7 @@ interface Config {
 	SENTRY_URL: string;
 	NODE_ENV: string;
 	MONGO_URL: string;
+	API_VERSION: string;
 }
 
 const getConfig = (): ENV => {
@@ -18,6 +20,9 @@ const getConfig = (): ENV => {
 		SENTRY_URL: process.env.SENTRY_URL ? process.env.SENTRY_URL : undefined,
 		NODE_ENV: process.env.NODE_ENV ? process.env.NODE_ENV : undefined,
 		MONGO_URL: process.env.MONGO_URL ? process.env.MONGO_URL : undefined,
+		API_VERSION: process.env.API_VERSION
+			? process.env.API_VERSION
+			: undefined,
 	};
 };
 

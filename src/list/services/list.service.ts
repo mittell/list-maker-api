@@ -1,8 +1,8 @@
 import ListDao from '../dao/list.dao';
-import { CRUD } from '../../common/interfaces/crud.interface';
+import { IService } from '../../common/interfaces/service.interface';
 
-class ListService implements CRUD {
-	async list(limit?: number, page?: number) {
+class ListService implements IService {
+	async list(limit: number, page: number) {
 		return ListDao.getLists(limit, page);
 	}
 
@@ -10,18 +10,17 @@ class ListService implements CRUD {
 		return ListDao.getListById(id);
 	}
 
-	// Add CreateListDto here...
 	async create(listData: any) {
 		return ListDao.addList(listData);
 	}
 
-	// Add UpdateListDto here...
-	async putById(id: string, listData: any) {
+	//@ts-expect-error
+	async putById({ id, ...listData }) {
 		return ListDao.updateListById(id, listData);
 	}
 
-	// Add UpdateListDto here...
-	async patchById(id: string, listData: any) {
+	//@ts-expect-error
+	async patchById({ id, ...listData }) {
 		return ListDao.updateListById(id, listData);
 	}
 

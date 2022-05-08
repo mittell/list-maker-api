@@ -1,52 +1,46 @@
-import mongooseService from '../../common/services/mongoose.service';
+import { prop, getModelForClass, modelOptions } from '@typegoose/typegoose';
 import shortid from 'shortid';
 
+@modelOptions({
+	schemaOptions: {
+		_id: true,
+		timestamps: true,
+		toObject: { virtuals: true },
+	},
+})
+class List {
+	@prop()
+	public _id!: string;
+
+	@prop({ type: () => String, required: true })
+	public title!: string;
+
+	@prop({ type: () => String, required: true })
+	public description!: string;
+
+	@prop({ type: () => String, required: true })
+	public userId!: string;
+}
+
 class ListDao {
-	Schema = mongooseService.getMongoose().Schema;
+	ListModel = getModelForClass(List);
 
-	listSchema = new this.Schema(
-		{
-			_id: String,
-			title: {
-				type: String,
-				required: true,
-			},
-			description: {
-				type: String,
-				required: true,
-			},
-			userId: {
-				type: String,
-				required: true,
-			},
-		},
-		{
-			id: false,
-			timestamps: true,
-		}
-	);
+	constructor() {}
 
-	List = mongooseService.getMongoose().model('List', this.listSchema);
-
-	constructor() {
-		console.log('Created a new instance of ListsDao');
-	}
-
-	async getLists(limit = 10, page = 0) {
-		return this.List.find()
+	async getLists(limit: number, page: number) {
+		return this.ListModel.find()
 			.limit(limit)
 			.skip(limit * page)
 			.exec();
 	}
 
 	async getListById(listId: string) {
-		return this.List.findOne({ _id: listId }).exec();
+		return this.ListModel.findOne({ _id: listId }).exec();
 	}
 
-	// Add CreateListDto here...
 	async addList(listData: any) {
 		const listId = shortid.generate();
-		const list = new this.List({
+		const list = new this.ListModel({
 			_id: listId,
 			...listData,
 		});
@@ -54,9 +48,8 @@ class ListDao {
 		return listId;
 	}
 
-	// Add UpdateListDto here...
 	async updateListById(listId: string, listData: any) {
-		return this.List.findOneAndUpdate(
+		return this.ListModel.findOneAndUpdate(
 			{ _id: listId },
 			{ $set: listData },
 			{ new: true }
@@ -64,7 +57,7 @@ class ListDao {
 	}
 
 	async removeListById(listId: string) {
-		return this.List.deleteOne({ _id: listId }).exec();
+		return this.ListModel.deleteOne({ _id: listId }).exec();
 	}
 }
 
