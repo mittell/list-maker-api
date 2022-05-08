@@ -9,11 +9,11 @@ export class ListToReturnDto {
 	listItems!: any[];
 
 	mapFromDocument(list: any) {
-		this.id = list._doc._id;
-		this.title = list.title;
-		this.description = list.description;
-		this.createdAt = list.createdAt;
-		this.updatedAt = list.updatedAt;
+		let id = list._doc._id;
+		let title = list.title;
+		let description = list.description;
+		let createdAt = list.createdAt;
+		let updatedAt = list.updatedAt;
 
 		if (
 			this.id === null ||
@@ -35,6 +35,12 @@ export class ListToReturnDto {
 			console.log('Unable to map List from Document');
 			throw new MappingError('Unable to map List from Document');
 		}
+
+		this.id = id;
+		this.title = title;
+		this.description = description;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 	}
 
 	mapListItemsFromDocument(listItems: any[]) {
