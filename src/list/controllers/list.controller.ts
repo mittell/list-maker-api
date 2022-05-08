@@ -57,6 +57,7 @@ class ListController {
 
 	async createList(req: Request, res: Response, next: NextFunction) {
 		let listToCreate: ListToCreateDto = new ListToCreateDto();
+
 		listToCreate.mapFromRequest(req.body);
 
 		await ListService.create(listToCreate)
@@ -71,6 +72,7 @@ class ListController {
 
 	async patchList(req: Request, res: Response, next: NextFunction) {
 		let listToUpdate: ListToUpdateDto = new ListToUpdateDto();
+
 		listToUpdate.mapFromRequest(req.body);
 
 		await ListService.patchById(listToUpdate)
@@ -84,6 +86,7 @@ class ListController {
 
 	async putList(req: Request, res: Response, next: NextFunction) {
 		let listToUpdate: ListToUpdateDto = new ListToUpdateDto();
+
 		listToUpdate.mapFromRequest(req.body);
 
 		await ListService.putById(listToUpdate)
@@ -97,16 +100,17 @@ class ListController {
 
 	async removeList(req: Request, res: Response, next: NextFunction) {
 		let listId = req.body.id;
-		const existingList = await ListService.getById(listId);
 
-		if (!existingList) {
-			next(new NotFoundError());
-		}
+		await ListService.getById(listId)
+			.then(async (existingList) => {
+				if (!existingList) {
+					next(new NotFoundError());
+				}
 
-		//@ts-expect-error
-		await ListService.deleteById(existingList._id)
-			.then(() => {
-				res.status(204).send();
+				//@ts-expect-error
+				await ListService.deleteById(existingList._id).then(() => {
+					res.status(204).send();
+				});
 			})
 			.catch((error) => {
 				next(error);
