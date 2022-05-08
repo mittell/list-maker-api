@@ -2,10 +2,7 @@ import { Application, Router } from 'express';
 import env from '../../config/env.config';
 import UserController from '../controllers/user.controller';
 import { extractUserId } from '../middleware/user.middleware';
-import {
-	validateBody,
-	validateRequest,
-} from '../../common/middleware/validation.middleware';
+import { validateRequest } from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
 
 export function registerUserRoutes(app: Application) {
@@ -37,7 +34,6 @@ export function userRoutes() {
 	router.patch(
 		'/:userId',
 		extractUserId,
-		validateBody(),
 		validateRequest(userPatchValidators()),
 		UserController.patchUser // TODO - Needs authentication!
 	);
@@ -72,5 +68,30 @@ function userPatchValidators() {
 		body('username').optional().notEmpty(),
 		body('email').optional().notEmpty().isEmail(),
 		body('password').optional().notEmpty().isLength({ min: 6 }),
+		body().custom((_value, { req }) => {
+			let body = req.body;
+			if (
+				(body.constructor === Object &&
+					Object.keys(body).length === 0) ||
+				(Object.keys(body).length === 1 && body['id'] !== undefined)
+			) {
+				throw new Error('Body cannot be empty');
+			}
+
+			return true;
+		}),
+		body().custom((_value, { req }) => {
+			let body = req.body;
+
+			if (
+				body['username'] !== undefined ||
+				body['email'] !== undefined ||
+				body['password'] !== undefined
+			) {
+				return true;
+			}
+
+			throw new Error('Body does not contain valid data');
+		}),
 	];
 }

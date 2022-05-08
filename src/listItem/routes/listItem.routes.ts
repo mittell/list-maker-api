@@ -2,10 +2,7 @@ import { Application, Router } from 'express';
 import env from '../../config/env.config';
 import ListItemController from '../controllers/listItem.controller';
 import { extractListItemId } from '../middleware/listItem.middleware';
-import {
-	validateBody,
-	validateRequest,
-} from '../../common/middleware/validation.middleware';
+import { validateRequest } from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
 
 export function registerListItemRoutes(app: Application) {
@@ -37,7 +34,6 @@ export function listItemRoutes() {
 	router.patch(
 		'/:listItemId',
 		extractListItemId,
-		validateBody(),
 		validateRequest(listItemPatchValidators()),
 		ListItemController.patchListItem
 	);
@@ -75,5 +71,31 @@ function listItemPatchValidators() {
 		body('description').optional().notEmpty(),
 		body('isComplete').optional().isBoolean(),
 		body('listId').optional().notEmpty(), // TODO - ListId needs to be validated somewhere?
+		body().custom((_value, { req }) => {
+			let body = req.body;
+			if (
+				(body.constructor === Object &&
+					Object.keys(body).length === 0) ||
+				(Object.keys(body).length === 1 && body['id'] !== undefined)
+			) {
+				throw new Error('Body cannot be empty');
+			}
+
+			return true;
+		}),
+		body().custom((_value, { req }) => {
+			let body = req.body;
+
+			if (
+				body['title'] !== undefined ||
+				body['description'] !== undefined ||
+				body['isComplete'] !== undefined ||
+				body['listId'] !== undefined
+			) {
+				return true;
+			}
+
+			throw new Error('Body does not contain valid data');
+		}),
 	];
 }

@@ -1,8 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import { validationResult, ValidationChain } from 'express-validator';
-import { ValidationError } from '../types/error.type';
-
-// TODO - Consider matchedData() to check for invalid data? i.e incorrect fields being submitted and accepted
 
 export function validateRequest(validations: ValidationChain[]) {
 	return async (req: Request, _res: Response, next: NextFunction) => {
@@ -17,24 +14,5 @@ export function validateRequest(validations: ValidationChain[]) {
 			return next();
 		}
 		return next(errors);
-	};
-}
-
-export function validateBody() {
-	return async (req: Request, _res: Response, next: NextFunction) => {
-		const body = req.body;
-
-		if (
-			(body.constructor === Object && Object.keys(body).length === 0) ||
-			(Object.keys(body).length === 1 && body['id'] !== undefined)
-		) {
-			return next(
-				new ValidationError('ValidationError', [
-					'Body cannot be empty.',
-				])
-			);
-		}
-
-		next();
 	};
 }

@@ -63,7 +63,13 @@ export function handleErrors(
 			status: 406,
 			name: 'ExpressValidatorError',
 			message: [
-				...new Set(error.array().map((e) => `${e.param}: ${e.msg}`)),
+				...new Set(
+					error
+						.array()
+						.map((e) =>
+							e.param === '' ? `${e.msg}` : `${e.param}: ${e.msg}`
+						)
+				),
 			],
 		});
 	} else if (error instanceof MongooseError.ValidationError) {
