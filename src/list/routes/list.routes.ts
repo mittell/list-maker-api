@@ -52,7 +52,7 @@ function listCreateValidators() {
 	return [
 		body('title').exists().notEmpty(),
 		body('description').exists().notEmpty(),
-		body('userId').exists().notEmpty(), // TODO - UserId needs to be validated somewhere?
+		body('userId').exists().notEmpty(),
 	];
 }
 
@@ -60,7 +60,7 @@ function listPutValidators() {
 	return [
 		body('title').exists().notEmpty(),
 		body('description').exists().notEmpty(),
-		body('userId').exists().notEmpty(), // TODO - UserId needs to be validated somewhere?
+		body('userId').exists().notEmpty(),
 	];
 }
 
@@ -68,7 +68,7 @@ function listPatchValidators() {
 	return [
 		body('title').optional().notEmpty(),
 		body('description').optional().notEmpty(),
-		body('userId').optional().notEmpty(), // TODO - UserId needs to be validated somewhere?
+		body('userId').optional().notEmpty(),
 		body().custom((_value, { req }) => {
 			let body = req.body;
 			if (

@@ -52,7 +52,7 @@ function listItemCreateValidators() {
 		body('title').exists().notEmpty(),
 		body('description').exists().notEmpty(),
 		body('isComplete').if(body('isComplete').exists()).isBoolean(),
-		body('listId').exists().notEmpty(), // TODO - ListId needs to be validated somewhere?
+		body('listId').exists().notEmpty(),
 	];
 }
 
@@ -61,7 +61,7 @@ function listItemPutValidators() {
 		body('title').exists().notEmpty(),
 		body('description').exists().notEmpty(),
 		body('isComplete').if(body('isComplete').exists()).isBoolean(),
-		body('listId').exists().notEmpty(), // TODO - ListId needs to be validated somewhere?
+		body('listId').exists().notEmpty(),
 	];
 }
 
@@ -70,7 +70,7 @@ function listItemPatchValidators() {
 		body('title').optional().notEmpty(),
 		body('description').optional().notEmpty(),
 		body('isComplete').optional().isBoolean(),
-		body('listId').optional().notEmpty(), // TODO - ListId needs to be validated somewhere?
+		body('listId').optional().notEmpty(),
 		body().custom((_value, { req }) => {
 			let body = req.body;
 			if (

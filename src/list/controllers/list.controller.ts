@@ -58,6 +58,8 @@ class ListController {
 	}
 
 	async createList(req: Request, res: Response, next: NextFunction) {
+		// TODO - Check existing UserId is valid here...
+
 		let listToCreate: ListToCreateDto = new ListToCreateDto();
 
 		listToCreate.mapFromRequest(req.body);
@@ -73,6 +75,8 @@ class ListController {
 	}
 
 	async patchList(req: Request, res: Response, next: NextFunction) {
+		// TODO - Check existing UserId is valid here...
+
 		let listToUpdate: ListToUpdateDto = new ListToUpdateDto();
 
 		listToUpdate.mapFromRequest(req.body);
@@ -87,6 +91,8 @@ class ListController {
 	}
 
 	async putList(req: Request, res: Response, next: NextFunction) {
+		// TODO - Check existing UserId is valid here...
+		
 		let listToUpdate: ListToUpdateDto = new ListToUpdateDto();
 
 		listToUpdate.mapFromRequest(req.body);
