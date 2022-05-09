@@ -82,10 +82,10 @@ Build and run the compiled version with the build and start scripts:
 -   [x] Create User Interface, DAO, Service, Controller, and Routing
 -   [x] Add Request Data Validation Middleware
 -   [x] Add Request/Response DTOs
--   [ ] Review/Refactor/Optimise
--   [ ] Add User Password Generation/Comparison Logic
--   [ ] Add Request Authentication Middleware
--   [ ] Add JWT Middleware and Authentication Integration
+-   [x] Review/Refactor/Optimise
+-   [x] Add User Password Generation/Comparison Logic
+-   [x] Add Request Authentication Middleware
+-   [x] Add JWT Middleware and Authentication Integration
 -   [ ] Add Swagger/OpenAPI Documentation
  
 ## Contact
