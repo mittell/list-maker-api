@@ -16,19 +16,25 @@ export function registerListRoutes(app: Application) {
 export function listRoutes() {
 	const router = Router();
 
+	// TODO - Add User Authentication here...
 	router.get('/', extractPageLimit, ListController.getLists);
+
+	// TODO - Add User Authentication here...
 	router.post(
 		'/',
 		validateRequest(listCreateValidators()),
 		ListController.createList
 	);
 
+	// TODO - Add User Authentication here...
 	router.get(
 		'/:listId',
 		extractListId,
 		extractListItems,
 		ListController.getListById
 	);
+
+	// TODO - Add User Authentication here...
 	router.put(
 		'/:listId',
 		extractListId,
@@ -36,6 +42,7 @@ export function listRoutes() {
 		ListController.putList
 	);
 
+	// TODO - Add User Authentication here...
 	router.patch(
 		'/:listId',
 		extractListId,
@@ -43,6 +50,7 @@ export function listRoutes() {
 		ListController.patchList
 	);
 
+	// TODO - Add User Authentication here...
 	router.delete('/:listId', extractListId, ListController.removeList);
 
 	return router;
@@ -52,7 +60,7 @@ function listCreateValidators() {
 	return [
 		body('title').exists().notEmpty(),
 		body('description').exists().notEmpty(),
-		body('userId').exists().notEmpty(), // TODO - UserId needs to be validated somewhere?
+		body('userId').exists().notEmpty(),
 	];
 }
 
@@ -60,7 +68,7 @@ function listPutValidators() {
 	return [
 		body('title').exists().notEmpty(),
 		body('description').exists().notEmpty(),
-		body('userId').exists().notEmpty(), // TODO - UserId needs to be validated somewhere?
+		body('userId').exists().notEmpty(),
 	];
 }
 
@@ -68,7 +76,7 @@ function listPatchValidators() {
 	return [
 		body('title').optional().notEmpty(),
 		body('description').optional().notEmpty(),
-		body('userId').optional().notEmpty(), // TODO - UserId needs to be validated somewhere?
+		body('userId').optional().notEmpty(),
 		body().custom((_value, { req }) => {
 			let body = req.body;
 			if (

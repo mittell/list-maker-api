@@ -12,18 +12,24 @@ export function registerListItemRoutes(app: Application) {
 export function listItemRoutes() {
 	const router = Router();
 
+	// TODO - Add User Authentication here...
 	router.get('/', ListItemController.getListItems);
+
+	// TODO - Add User Authentication here...
 	router.post(
 		'/',
 		validateRequest(listItemCreateValidators()),
 		ListItemController.createListItem
 	);
 
+	// TODO - Add User Authentication here...
 	router.get(
 		'/:listItemId',
 		extractListItemId,
 		ListItemController.getListItemById
 	);
+
+	// TODO - Add User Authentication here...
 	router.put(
 		'/:listItemId',
 		extractListItemId,
@@ -31,6 +37,7 @@ export function listItemRoutes() {
 		ListItemController.putListItem
 	);
 
+	// TODO - Add User Authentication here...
 	router.patch(
 		'/:listItemId',
 		extractListItemId,
@@ -38,6 +45,7 @@ export function listItemRoutes() {
 		ListItemController.patchListItem
 	);
 
+	// TODO - Add User Authentication here...
 	router.delete(
 		'/:listItemId',
 		extractListItemId,
@@ -52,7 +60,7 @@ function listItemCreateValidators() {
 		body('title').exists().notEmpty(),
 		body('description').exists().notEmpty(),
 		body('isComplete').if(body('isComplete').exists()).isBoolean(),
-		body('listId').exists().notEmpty(), // TODO - ListId needs to be validated somewhere?
+		body('listId').exists().notEmpty(),
 	];
 }
 
@@ -61,7 +69,7 @@ function listItemPutValidators() {
 		body('title').exists().notEmpty(),
 		body('description').exists().notEmpty(),
 		body('isComplete').if(body('isComplete').exists()).isBoolean(),
-		body('listId').exists().notEmpty(), // TODO - ListId needs to be validated somewhere?
+		body('listId').exists().notEmpty(),
 	];
 }
 
@@ -70,7 +78,7 @@ function listItemPatchValidators() {
 		body('title').optional().notEmpty(),
 		body('description').optional().notEmpty(),
 		body('isComplete').optional().isBoolean(),
-		body('listId').optional().notEmpty(), // TODO - ListId needs to be validated somewhere?
+		body('listId').optional().notEmpty(),
 		body().custom((_value, { req }) => {
 			let body = req.body;
 			if (

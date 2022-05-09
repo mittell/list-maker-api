@@ -45,6 +45,8 @@ class ListItemController {
 	}
 
 	async createListItem(req: Request, res: Response, next: NextFunction) {
+		// TODO - Check existing ListId is valid here...
+
 		let listItemToCreate: ListItemToCreateDto = new ListItemToCreateDto();
 
 		listItemToCreate.mapFromRequest(req.body);
@@ -60,6 +62,8 @@ class ListItemController {
 	}
 
 	async patchListItem(req: Request, res: Response, next: NextFunction) {
+		// TODO - Check existing ListId is valid here...
+
 		let listItemToUpdate: ListItemToUpdateDto = new ListItemToUpdateDto();
 
 		listItemToUpdate.mapFromRequest(req.body);
@@ -74,6 +78,8 @@ class ListItemController {
 	}
 
 	async putListItem(req: Request, res: Response, next: NextFunction) {
+		// TODO - Check existing ListId is valid here...
+
 		let listItemToUpdate: ListItemToUpdateDto = new ListItemToUpdateDto();
 
 		listItemToUpdate.mapFromRequest(req.body);
