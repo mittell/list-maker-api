@@ -4,6 +4,7 @@ import { UserToCreateDto } from '../dto/userToCreate.dto';
 import { UserToReturnDto } from '../dto/userToReturn.dto';
 import { UserToUpdateDto } from '../dto/userToUpdate.dto';
 import UserService from '../services/user.service';
+import argon2 from 'argon2';
 
 class UserController {
 	async getUsers(_req: Request, res: Response, next: NextFunction) {
@@ -46,9 +47,9 @@ class UserController {
 
 		userToCreate.mapFromRequest(req.body);
 
-		// TODO - Password generation and hashing needed to happen here!!!
+		userToCreate.password = await argon2.hash(userToCreate.password);
 
-		await UserService.create(req.body)
+		await UserService.create(userToCreate)
 			.then((id) => {
 				userToCreate.id = id;
 				res.status(201).send({ id: userToCreate.id });
@@ -63,7 +64,9 @@ class UserController {
 
 		userToUpdate.mapFromRequest(req.body);
 
-		// TODO - Password hashing needed to happen here!!!
+		if (req.body.password) {
+			userToUpdate.password = await argon2.hash(userToUpdate.password);
+		}
 
 		await UserService.patchById(userToUpdate)
 			.then(() => {
@@ -79,7 +82,7 @@ class UserController {
 
 		userToUpdate.mapFromRequest(req.body);
 
-		// TODO - Password hashing needed to happen here!!!
+		userToUpdate.password = await argon2.hash(userToUpdate.password);
 
 		await UserService.putById(userToUpdate)
 			.then(() => {
