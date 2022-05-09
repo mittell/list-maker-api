@@ -24,3 +24,18 @@ export function verifyUserPassword() {
 		next(new UnauthenticatedError());
 	};
 }
+
+export function verifyUserRequest() {
+	return async (req: Request, res: Response, next: NextFunction) => {
+		const userId = req.body.id;
+
+		const user = await UserService.getById(userId);
+
+		if (user) {
+			if (userId === res.locals.jwt.userId) {
+				return next();
+			}
+		}
+		next(new UnauthenticatedError());
+	};
+}

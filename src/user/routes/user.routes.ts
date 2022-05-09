@@ -4,7 +4,7 @@ import UserController from '../controllers/user.controller';
 import { extractUserId } from '../middleware/user.middleware';
 import { validateRequest } from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
-import { verifyUserPassword } from '../../common/middleware/auth.middleware';
+import { verifyUserPassword, verifyUserRequest } from '../../common/middleware/auth.middleware';
 import {
 	validateJsonWebToken,
 	validateRefreshBody,
@@ -28,7 +28,13 @@ export function userRoutes() {
 	);
 
 	// TODO - Add User Authentication here...
-	router.get('/:userId', extractUserId, UserController.getUserById);
+	router.get(
+		'/:userId',
+		validateJsonWebToken(),
+		extractUserId,
+		verifyUserRequest(),
+		UserController.getUserById
+	);
 
 	// TODO - Add User Authentication here...
 	router.put(
