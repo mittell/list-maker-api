@@ -1,5 +1,3 @@
-// TODO - Consider Mongoose/Mongo Error and Status Codes?
-
 export enum HttpStatusCodes {
 	OK = 200,
 	Created = 201,
