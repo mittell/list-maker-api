@@ -27,7 +27,7 @@ class UserController {
 	}
 
 	async getUserById(req: Request, res: Response, next: NextFunction) {
-		let userId = req.body.id;
+		let userId = req.body.jwt.userId;
 
 		await UserService.getById(userId)
 			.then((existingUser) => {
@@ -97,7 +97,7 @@ class UserController {
 	}
 
 	async removeUser(req: Request, res: Response, next: NextFunction) {
-		let userId = req.body.id;
+		let userId = req.body.jwt.userId;
 
 		await UserService.getById(userId)
 			.then(async (existingUser) => {

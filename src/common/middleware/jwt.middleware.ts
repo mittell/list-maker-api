@@ -11,7 +11,7 @@ import {
 import UserService from '../../user/services/user.service';
 
 export function validateJsonWebToken() {
-	return async (req: Request, res: Response, next: NextFunction) => {
+	return async (req: Request, _res: Response, next: NextFunction) => {
 		if (req.headers['authorization']) {
 			try {
 				const authorization = req.headers['authorization'].split(' ');
@@ -20,7 +20,7 @@ export function validateJsonWebToken() {
 					return next(new UnauthenticatedError());
 				} else {
 					//@ts-expect-error
-					res.locals.jwt = jwt.verify(
+					req.body.jwt = jwt.verify(
 						//@ts-expect-error
 						authorization[1],
 						env.JWT_SECRET
@@ -37,18 +37,18 @@ export function validateJsonWebToken() {
 }
 
 export function validateRefreshToken() {
-	return async (req: Request, res: Response, next: NextFunction) => {
+	return async (req: Request, _res: Response, next: NextFunction) => {
 		const user: any = await UserService.getUserByEmailWithPassword(
-			res.locals.jwt.email
+			req.body.jwt.email
 		);
 
 		const salt = crypto.createSecretKey(
-			Buffer.from(res.locals.jwt.refreshKey.data)
+			Buffer.from(req.body.jwt.refreshKey.data)
 		);
 
 		const hash = crypto
 			.createHmac('sha512', salt)
-			.update(res.locals.jwt.userId + env.JWT_SECRET)
+			.update(req.body.jwt.userId + env.JWT_SECRET)
 			.digest('base64');
 
 		if (hash === req.body.refreshToken) {

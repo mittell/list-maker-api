@@ -8,6 +8,7 @@ import {
 } from '../middleware/list.middleware';
 import { validateRequest } from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
+import { validateJsonWebToken } from '../../common/middleware/jwt.middleware';
 
 export function registerListRoutes(app: Application) {
 	app.use(`/api/${env.API_VERSION}/lists`, listRoutes());
@@ -16,42 +17,50 @@ export function registerListRoutes(app: Application) {
 export function listRoutes() {
 	const router = Router();
 
-	// TODO - Add User Authentication here...
-	router.get('/', extractPageLimit, ListController.getLists);
+	router.get(
+		'/',
+		validateJsonWebToken(),
+		extractPageLimit,
+		ListController.getLists
+	);
 
-	// TODO - Add User Authentication here...
 	router.post(
 		'/',
+		validateJsonWebToken(),
 		validateRequest(listCreateValidators()),
 		ListController.createList
 	);
 
-	// TODO - Add User Authentication here...
 	router.get(
 		'/:listId',
+		validateJsonWebToken(),
 		extractListId,
 		extractListItems,
 		ListController.getListById
 	);
 
-	// TODO - Add User Authentication here...
 	router.put(
 		'/:listId',
+		validateJsonWebToken(),
 		extractListId,
 		validateRequest(listPutValidators()),
 		ListController.putList
 	);
 
-	// TODO - Add User Authentication here...
 	router.patch(
 		'/:listId',
+		validateJsonWebToken(),
 		extractListId,
 		validateRequest(listPatchValidators()),
 		ListController.patchList
 	);
 
-	// TODO - Add User Authentication here...
-	router.delete('/:listId', extractListId, ListController.removeList);
+	router.delete(
+		'/:listId',
+		validateJsonWebToken(),
+		extractListId,
+		ListController.removeList
+	);
 
 	return router;
 }

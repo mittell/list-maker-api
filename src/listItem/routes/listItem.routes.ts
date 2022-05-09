@@ -4,6 +4,7 @@ import ListItemController from '../controllers/listItem.controller';
 import { extractListItemId } from '../middleware/listItem.middleware';
 import { validateRequest } from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
+import { validateJsonWebToken } from '../../common/middleware/jwt.middleware';
 
 export function registerListItemRoutes(app: Application) {
 	app.use(`/api/${env.API_VERSION}/listItems`, listItemRoutes());
@@ -12,42 +13,41 @@ export function registerListItemRoutes(app: Application) {
 export function listItemRoutes() {
 	const router = Router();
 
-	// TODO - Add User Authentication here...
-	router.get('/', ListItemController.getListItems);
+	router.get('/', validateJsonWebToken(), ListItemController.getListItems);
 
-	// TODO - Add User Authentication here...
 	router.post(
 		'/',
+		validateJsonWebToken(),
 		validateRequest(listItemCreateValidators()),
 		ListItemController.createListItem
 	);
 
-	// TODO - Add User Authentication here...
 	router.get(
 		'/:listItemId',
+		validateJsonWebToken(),
 		extractListItemId,
 		ListItemController.getListItemById
 	);
 
-	// TODO - Add User Authentication here...
 	router.put(
 		'/:listItemId',
+		validateJsonWebToken(),
 		extractListItemId,
 		validateRequest(listItemPutValidators()),
 		ListItemController.putListItem
 	);
 
-	// TODO - Add User Authentication here...
 	router.patch(
 		'/:listItemId',
+		validateJsonWebToken(),
 		extractListItemId,
 		validateRequest(listItemPatchValidators()),
 		ListItemController.patchListItem
 	);
 
-	// TODO - Add User Authentication here...
 	router.delete(
 		'/:listItemId',
+		validateJsonWebToken(),
 		extractListItemId,
 		ListItemController.removeListItem
 	);

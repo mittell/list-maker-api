@@ -15,7 +15,6 @@ export function verifyUserPassword() {
 					userId: user._id,
 					email: user.email,
 					username: user.username,
-					password: user.password,
 				};
 				return next();
 			}
@@ -26,16 +25,13 @@ export function verifyUserPassword() {
 }
 
 export function verifyUserRequest() {
-	return async (req: Request, res: Response, next: NextFunction) => {
-		const userId = req.body.id;
+	return async (req: Request, _res: Response, next: NextFunction) => {
+		const requestUserId = req.params.userId;
 
-		const user = await UserService.getById(userId);
-
-		if (user) {
-			if (userId === res.locals.jwt.userId) {
-				return next();
-			}
+		if (requestUserId === req.body.jwt.userId) {
+			return next();
 		}
+
 		next(new UnauthenticatedError());
 	};
 }
