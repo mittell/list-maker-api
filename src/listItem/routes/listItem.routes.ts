@@ -12,18 +12,24 @@ export function registerListItemRoutes(app: Application) {
 export function listItemRoutes() {
 	const router = Router();
 
+	// TODO - Add User Authentication here...
 	router.get('/', ListItemController.getListItems);
+
+	// TODO - Add User Authentication here...
 	router.post(
 		'/',
 		validateRequest(listItemCreateValidators()),
 		ListItemController.createListItem
 	);
 
+	// TODO - Add User Authentication here...
 	router.get(
 		'/:listItemId',
 		extractListItemId,
 		ListItemController.getListItemById
 	);
+
+	// TODO - Add User Authentication here...
 	router.put(
 		'/:listItemId',
 		extractListItemId,
@@ -31,6 +37,7 @@ export function listItemRoutes() {
 		ListItemController.putListItem
 	);
 
+	// TODO - Add User Authentication here...
 	router.patch(
 		'/:listItemId',
 		extractListItemId,
@@ -38,6 +45,7 @@ export function listItemRoutes() {
 		ListItemController.patchListItem
 	);
 
+	// TODO - Add User Authentication here...
 	router.delete(
 		'/:listItemId',
 		extractListItemId,

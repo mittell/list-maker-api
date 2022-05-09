@@ -12,32 +12,35 @@ export function registerUserRoutes(app: Application) {
 export function userRoutes() {
 	const router = Router();
 
-	router.get('/', UserController.getUsers); // TODO - Remove
+	// TODO - Remove or add Admin Authentication here...
+	router.get('/', UserController.getUsers);
+
 	router.post(
 		'/',
 		validateRequest(userCreateValidators()),
 		UserController.createUser
 	);
 
-	router.get(
-		'/:userId',
-		extractUserId,
-		UserController.getUserById // TODO - Needs authentication!
-	);
+	// TODO - Add User Authentication here...
+	router.get('/:userId', extractUserId, UserController.getUserById);
+
+	// TODO - Add User Authentication here...
 	router.put(
 		'/:userId',
 		extractUserId,
 		validateRequest(userPutValidators()),
-		UserController.putUser // TODO - Needs authentication!
+		UserController.putUser
 	);
 
+	// TODO - Add User Authentication here...
 	router.patch(
 		'/:userId',
 		extractUserId,
 		validateRequest(userPatchValidators()),
-		UserController.patchUser // TODO - Needs authentication!
+		UserController.patchUser
 	);
 
+	// TODO - Remove or add Admin Authentication here...
 	router.delete(
 		'/:userId',
 		extractUserId,

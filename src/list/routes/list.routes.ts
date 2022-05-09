@@ -16,19 +16,25 @@ export function registerListRoutes(app: Application) {
 export function listRoutes() {
 	const router = Router();
 
+	// TODO - Add User Authentication here...
 	router.get('/', extractPageLimit, ListController.getLists);
+
+	// TODO - Add User Authentication here...
 	router.post(
 		'/',
 		validateRequest(listCreateValidators()),
 		ListController.createList
 	);
 
+	// TODO - Add User Authentication here...
 	router.get(
 		'/:listId',
 		extractListId,
 		extractListItems,
 		ListController.getListById
 	);
+
+	// TODO - Add User Authentication here...
 	router.put(
 		'/:listId',
 		extractListId,
@@ -36,6 +42,7 @@ export function listRoutes() {
 		ListController.putList
 	);
 
+	// TODO - Add User Authentication here...
 	router.patch(
 		'/:listId',
 		extractListId,
@@ -43,6 +50,7 @@ export function listRoutes() {
 		ListController.patchList
 	);
 
+	// TODO - Add User Authentication here...
 	router.delete('/:listId', extractListId, ListController.removeList);
 
 	return router;

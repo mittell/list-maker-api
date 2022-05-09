@@ -6,7 +6,6 @@ import { UserToUpdateDto } from '../dto/userToUpdate.dto';
 import UserService from '../services/user.service';
 
 class UserController {
-	// TODO - Exposed endpoint needs to be removed!
 	async getUsers(_req: Request, res: Response, next: NextFunction) {
 		await UserService.list()
 			.then((users) => {
@@ -23,7 +22,6 @@ class UserController {
 			});
 	}
 
-	// TODO - Endpoint will need authentication, so only the user can get their own details?
 	async getUserById(req: Request, res: Response, next: NextFunction) {
 		let userId = req.body.id;
 
@@ -60,7 +58,6 @@ class UserController {
 			});
 	}
 
-	// TODO - Endpoint will need authentication, so only the user can get update own details?
 	async patchUser(req: Request, res: Response, next: NextFunction) {
 		let userToUpdate: UserToUpdateDto = new UserToUpdateDto();
 
@@ -77,7 +74,6 @@ class UserController {
 			});
 	}
 
-	// TODO - Endpoint will need authentication, so only the user can get update own details?
 	async putUser(req: Request, res: Response, next: NextFunction) {
 		let userToUpdate: UserToUpdateDto = new UserToUpdateDto();
 
@@ -94,7 +90,6 @@ class UserController {
 			});
 	}
 
-	// TODO - Exposed endpoint needs to be removed???
 	async removeUser(req: Request, res: Response, next: NextFunction) {
 		let userId = req.body.id;
 
