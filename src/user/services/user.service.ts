@@ -27,6 +27,10 @@ class UserService implements IService {
 	async deleteById(id: string) {
 		return UserDao.removeUserById(id);
 	}
+
+	async getUserByEmailWithPassword(email: string) {
+		return UserDao.getUserByEmailWithPassword(email);
+	}
 }
 
 export default new UserService();

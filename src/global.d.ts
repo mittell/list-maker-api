@@ -5,5 +5,6 @@ namespace NodeJS {
 		NODE_ENV: string;
 		MONGO_URL: string;
 		API_VERSION: string;
+		JWT_SECRET: string;
 	}
 }

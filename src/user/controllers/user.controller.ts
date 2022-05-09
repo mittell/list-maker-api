@@ -5,6 +5,9 @@ import { UserToReturnDto } from '../dto/userToReturn.dto';
 import { UserToUpdateDto } from '../dto/userToUpdate.dto';
 import UserService from '../services/user.service';
 import argon2 from 'argon2';
+import { env } from 'process';
+import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
 
 class UserController {
 	async getUsers(_req: Request, res: Response, next: NextFunction) {
@@ -110,6 +113,34 @@ class UserController {
 			.catch((error) => {
 				next(error);
 			});
+	}
+
+	//@ts-expect-error
+	async generateJsonWebToken(
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) {
+		const tokenExpirationInSeconds = 36000;
+		try {
+			const refreshId = req.body.userId + env.JWT_SECRET;
+			const salt = crypto.createSecretKey(crypto.randomBytes(16));
+			const hash = crypto
+				.createHmac('sha512', salt)
+				.update(refreshId)
+				.digest('base64');
+			req.body.refreshKey = salt.export();
+			//@ts-ignore
+			const token = jwt.sign(req.body, env.JWT_SECRET, {
+				expiresIn: tokenExpirationInSeconds,
+			});
+			return res
+				.status(201)
+				.send({ accessToken: token, refreshToken: hash });
+		} catch (error) {
+			console.log('generateJsonWebToken Error');
+			next(error);
+		}
 	}
 }
 

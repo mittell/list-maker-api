@@ -4,6 +4,12 @@ import UserController from '../controllers/user.controller';
 import { extractUserId } from '../middleware/user.middleware';
 import { validateRequest } from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
+import { verifyUserPassword } from '../../common/middleware/auth.middleware';
+import {
+	validateJsonWebToken,
+	validateRefreshBody,
+	validateRefreshToken,
+} from '../../common/middleware/jwt.middleware';
 
 export function registerUserRoutes(app: Application) {
 	app.use(`/api/${env.API_VERSION}/users`, userRoutes());
@@ -46,6 +52,19 @@ export function userRoutes() {
 		extractUserId,
 		UserController.removeUser // TODO - Remove?
 	);
+
+	router.post(`/login`, [
+		validateRequest(userLoginValidators()),
+		verifyUserPassword(),
+		UserController.generateJsonWebToken,
+	]);
+
+	router.post(`/refresh-token`, [
+		validateJsonWebToken(),
+		validateRefreshBody(),
+		validateRefreshToken(),
+		UserController.generateJsonWebToken,
+	]);
 
 	return router;
 }
@@ -96,5 +115,12 @@ function userPatchValidators() {
 
 			throw new Error('Body does not contain valid data');
 		}),
+	];
+}
+
+function userLoginValidators() {
+	return [
+		body('email').exists().notEmpty().isEmail(),
+		body('password').exists().notEmpty().isLength({ min: 6 }),
 	];
 }
