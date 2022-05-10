@@ -336,3 +336,104 @@ describe('user endpoints', function () {
 		expect(res.body).to.be.empty;
 	});
 });
+
+describe('list endpoints', function () {
+	let request: supertest.SuperAgentTest;
+
+	let accessToken = '';
+	//@ts-ignore
+	let refreshToken = '';
+
+	let dummyUser = {
+		id: '',
+		email: 'dummy@email.com',
+		username: 'dummy',
+		password: 'dummy1',
+	};
+
+	let dummyList = {
+		id: '',
+		title: 'Test List',
+		description: 'The description of Test List',
+		userId: '',
+	};
+
+	before(async function () {
+		await app.start();
+		await app.startMongooseConnection();
+		await app.initialiseLoggers();
+		await app.registerParsers();
+		await app.registerRoutes();
+		await app.registerMiddleware();
+
+		request = supertest.agent(app.server);
+
+		const resCreate = await request.post('/api/v1/users').send(dummyUser);
+
+		dummyUser.id = resCreate.body.id;
+		dummyList.userId = resCreate.body.id;
+
+		const resLogin = await request.post('/api/v1/users/login').send({
+			email: dummyUser.email,
+			password: dummyUser.password,
+		});
+
+		accessToken = resLogin.body.accessToken;
+		refreshToken = resLogin.body.refreshToken;
+	});
+
+	after(async function () {
+		await request
+			.delete(`/api/v1/users/${dummyUser.id}`)
+			.set({ Authorization: `Bearer ${accessToken}` })
+			.send();
+		await app.stop();
+		await app.stopMongooseConnection();
+	});
+
+	// Create List - Invalid - Credentials
+
+	// Create List - Invalid - Request
+
+	// Create List - Valid
+	it('should return 201 on POST with valid data to /api/v1/lists', async function () {
+		const res = await request
+			.post('/api/v1/lists')
+			.set({ Authorization: `Bearer ${accessToken}` })
+			.send(dummyList);
+
+		expect(res.status).to.equal(201);
+		expect(res.body).not.to.be.empty;
+		expect(res.body).to.be.an('object');
+		expect(res.body.id).to.be.a('string');
+
+		dummyList.id = res.body.id;
+	});
+
+	// Patch List - Invalid - Credentials
+
+	// Patch List - Invalid - Request
+
+	// Patch List - Valid
+
+	// Put List - Invalid - Credentials
+
+	// Put List - Invalid - Request
+
+	// Put List - Valid
+
+	// Delete List - Invalid - Credentials
+
+	// Delete List - Invalid - Request
+
+	// Delete List - Valid
+	it('should return 204 on DELETE with valid credential data to /api/v1/lists/:id', async function () {
+		const res = await request
+			.delete(`/api/v1/lists/${dummyList.id}`)
+			.set({ Authorization: `Bearer ${accessToken}` })
+			.send();
+
+		expect(res.status).to.equal(204);
+		expect(res.body).to.be.empty;
+	});
+});
