@@ -1,56 +1,131 @@
-import express from 'express';
-import { RoutesConfig } from '../../common/config/routes.config';
+import { Application, Router } from 'express';
+import env from '../../config/env.config';
 import UserController from '../controllers/user.controller';
-import UserMiddleware from '../middleware/user.middleware';
-import ValidationMiddleware from '../../common/middleware/validation.middleware';
+import { validateRequest } from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
+import {
+	verifyUserPassword,
+	verifyUserRequest,
+} from '../../common/middleware/auth.middleware';
+import {
+	validateJsonWebToken,
+	validateRefreshBody,
+	validateRefreshToken,
+} from '../../common/middleware/jwt.middleware';
 
-export class UserRoutes extends RoutesConfig {
-	constructor(app: express.Application) {
-		super(app, 'UserRoutes');
-	}
+export function registerUserRoutes(app: Application) {
+	app.use(`/api/${env.API_VERSION}/users`, userRoutes());
+}
 
-	configureRoutes() {
-		this.app
-			.route(`/api/v1/users`)
-			.get(UserController.getUsers) // No need for exposure later...
-			.post(
-				ValidationMiddleware.validate([
-					body('username').exists().notEmpty(),
-					body('email').exists().notEmpty().isEmail(),
-					body('password').exists().notEmpty().isLength({ min: 6 }),
-				]),
-				UserController.createUser
-			);
+export function userRoutes() {
+	const router = Router();
 
-		this.app.param(`userId`, UserMiddleware.extractUserId);
-		this.app
-			.route(`/api/v1/users/:userId`)
-			.get(UserController.getUserById) // No need for exposure later...
-			.put(
-				ValidationMiddleware.validate([
-					body('username').exists().notEmpty(),
-					body('email').exists().notEmpty().isEmail(),
-					body('password').exists().notEmpty().isLength({ min: 6 }),
-				]),
-				UserController.putUser
-			) // No need for exposure later...
-			.patch(
-				ValidationMiddleware.validate([
-					body('username').if(body('username').exists()).notEmpty(),
-					body('email')
-						.if(body('email').exists())
-						.notEmpty()
-						.isEmail(),
-					body('password')
-						.if(body('password').exists())
-						.notEmpty()
-						.isLength({ min: 6 }),
-				]),
-				UserController.patchUser
-			)
-			.delete(UserController.removeUser); // No need for exposure later...
+	// router.get('/', UserController.getUsers);
 
-		return this.app;
-	}
+	router.post(
+		'/',
+		validateRequest(userCreateValidators()),
+		UserController.createUser
+	);
+
+	router.get(
+		'/:userId',
+		validateJsonWebToken(),
+		verifyUserRequest(),
+		UserController.getUserById
+	);
+
+	router.put(
+		'/:userId',
+		validateJsonWebToken(),
+		verifyUserRequest(),
+		validateRequest(userPutValidators()),
+		UserController.putUser
+	);
+
+	router.patch(
+		'/:userId',
+		validateJsonWebToken(),
+		verifyUserRequest(),
+		validateRequest(userPatchValidators()),
+		UserController.patchUser
+	);
+
+	router.delete(
+		'/:userId',
+		validateJsonWebToken(),
+		verifyUserRequest(),
+		UserController.removeUser
+	);
+
+	router.post(`/login`, [
+		validateRequest(userLoginValidators()),
+		verifyUserPassword(),
+		UserController.generateJsonWebToken,
+	]);
+
+	router.post(`/refresh-token`, [
+		validateJsonWebToken(),
+		validateRefreshBody(),
+		validateRefreshToken(),
+		UserController.generateJsonWebToken,
+	]);
+
+	return router;
+}
+
+function userCreateValidators() {
+	return [
+		body('username').exists().notEmpty(),
+		body('email').exists().notEmpty().isEmail(),
+		body('password').exists().notEmpty().isLength({ min: 6 }),
+	];
+}
+
+function userPutValidators() {
+	return [
+		body('username').exists().notEmpty(),
+		body('email').exists().notEmpty().isEmail(),
+		body('password').exists().notEmpty().isLength({ min: 6 }),
+	];
+}
+
+function userPatchValidators() {
+	return [
+		body('username').optional().notEmpty(),
+		body('email').optional().notEmpty().isEmail(),
+		body('password').optional().notEmpty().isLength({ min: 6 }),
+		body().custom((_value, { req }) => {
+			let body = req.body;
+			if (
+				(body.constructor === Object &&
+					Object.keys(body).length === 0) ||
+				(Object.keys(body).length === 1 && body['id'] !== undefined)
+			) {
+				throw new Error('Body cannot be empty');
+			}
+
+			return true;
+		}),
+		body().custom((_value, { req }) => {
+			let body = req.body;
+
+			if (
+				body['username'] !== undefined ||
+				body['email'] !== undefined ||
+				body['password'] !== undefined
+			) {
+				return true;
+			}
+
+			throw new Error('Body does not contain valid data');
+		}),
+	];
+}
+
+function userLoginValidators() {
+	return [
+		body('email').exists().notEmpty().isEmail(),
+		body('password').exists().notEmpty().isLength({ min: 6 }),
+	];
 }

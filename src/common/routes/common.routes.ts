@@ -1,24 +1,20 @@
-import { Application, Request, Response, NextFunction } from 'express';
-import { RoutesConfig } from '../config/routes.config';
-import { ErrorCode } from '../models/errorCode.model';
-import { ErrorException } from '../models/errorException.model';
+import { Application, Request, Response, Router } from 'express';
+import env from '../../config/env.config';
 
-export class CommonRoutes extends RoutesConfig {
-	constructor(app: Application) {
-		super(app, 'CommonRoutes');
-	}
+export function registerCommonRoutes(app: Application) {
+	app.use(`/api/${env.API_VERSION}`, commonRoutes());
+}
 
-	configureRoutes() {
-		this.app.get('/', (_req: Request, res: Response) => {
-			res.status(200).send('Hello World!');
+export function commonRoutes() {
+	const router = Router();
+
+	router.get('/', async (_req: Request, res: Response) => {
+		res.status(200).json({
+			name: 'List Maker API',
+			description: 'API for List Maker App.',
+			version: env.API_VERSION,
 		});
+	});
 
-		this.app.all(
-			'*',
-			(_req: Request, _res: Response, next: NextFunction) => {
-				next(new ErrorException(ErrorCode.InvalidUrl));
-			}
-		);
-		return this.app;
-	}
+	return router;
 }

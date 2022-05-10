@@ -6,7 +6,7 @@ orbs:
   sonarcloud: sonarsource/sonarcloud@1.0.3
 
 jobs:
-  test-build-scan-lint:
+  test-build-scan:
     docker:
       - image: cimg/node:17.9.0
     resource_class: small
@@ -22,14 +22,6 @@ jobs:
           command: npm run build
           name: Build app
       - sonarcloud/scan
-      - run:
-          name: Define environment variable with lastest commit's message
-          command: |
-            echo 'export COMMIT_MESSAGE=$(git log -10 --pretty=format:"%s")' >> $BASH_ENV
-            source $BASH_ENV
-      - run:
-          name: Lint commit message
-          command: echo "$COMMIT_MESSAGE" | npx commitlint
       - persist_to_workspace:
           root: ~/project
           paths:
@@ -66,17 +58,17 @@ jobs:
 workflows:
   build-deploy:
     jobs:
-      - test-build-scan-lint:
+      - test-build-scan:
           context: SonarCloud
       - deploy-dev:
           requires:
-            - test-build-scan-lint
+            - test-build-scan
           filters:
             branches:
               only: dev
       - deploy-prod:
           requires:
-            - test-build-scan-lint
+            - test-build-scan
           filters:
             branches:
               only: main

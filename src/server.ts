@@ -1,23 +1,20 @@
-import 'dotenv/config';
-import config from './config/env.config';
-import app from './config/app.config';
+import { App } from './config/app.config';
 
-import * as http from 'http';
-import * as Sentry from '@sentry/node';
+const app = new App();
 
-Sentry.init({
-	dsn: config.SENTRY_URL,
-	tracesSampleRate: 1.0,
-});
-
-const server: http.Server = http.createServer(app);
-const port = config.PORT;
-
-server.on('error', (error) => {
-	Sentry.captureException(error);
-});
-
-export default server.listen(port, () => {
-	console.log(`Server listening on port ${port}...`);
-	console.log(`Environment - ${config.NODE_ENV}`);
-});
+(async () => {
+	console.log('================================');
+	await app.start();
+	await app.startMongooseConnection();
+	await app.initialiseLoggers();
+	await app.registerParsers();
+	await app.registerRoutes();
+	await app.registerMiddleware();
+})()
+	.catch(async (error) => {
+		console.log(error);
+		await app.stop();
+		await app.stopMongooseConnection();
+		process.exit(0);
+	})
+	.finally(() => console.log('================================'));

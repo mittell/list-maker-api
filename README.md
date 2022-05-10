@@ -1,7 +1,8 @@
 <div align="center">
 
 # List Maker API
-A Node based API for a simple List Maker Web App. ***(Link Coming Soon!)***
+
+A Node based API for a simple List Maker Web App. **_(Link Coming Soon!)_**
 
 </div>
 
@@ -20,7 +21,7 @@ A Node based API for a simple List Maker Web App. ***(Link Coming Soon!)***
 
 ## About
 
-A companion server-side application to my List Maker App. ***(Link Coming Soon!)***
+A companion server-side application to my List Maker App. **_(Link Coming Soon!)_**
 
 Built using Node and TypeScript, integrating Clean Architecture ideas, and services for Code Analysis, Commit Linting, Error Logging, CI/CD, and Cloud Hosting.
 
@@ -54,10 +55,12 @@ Run the provided setup script:
 
 Created a .env file in the project root, and make sure the following keys are added:
 
-    PORT=<Add Port Number>
-    SENTRY_URL=<Add Sentry url in "quotes">
-    NODE_ENV=<Add environment in "quotes">
-    MONGO_URL=<Add MongoDB path/url in "quotes">
+    PORT=<Add Port Number - e.g. 3000>
+    SENTRY_URL=<Add Sentry URL>
+    NODE_ENV=<Add Environment - e.g. development>
+    MONGO_URL=<Add MongoDB PATH/URL>
+    API_VERSION=<Add Version - e.g. v1>
+    JWT_SECRET=<Add Secret - Make it long and random!>
 
 Run and debug the application with the dev script:
 
@@ -82,11 +85,13 @@ Build and run the compiled version with the build and start scripts:
 -   [x] Create User Interface, DAO, Service, Controller, and Routing
 -   [x] Add Request Data Validation Middleware
 -   [x] Add Request/Response DTOs
--   [ ] Review/Refactor/Optimise
--   [ ] Add User Password Generation/Comparison Logic
--   [ ] Add Request Authentication Middleware
--   [ ] Add JWT Middleware and Authentication Integration
- 
+-   [x] Review/Refactor/Optimise
+-   [x] Add User Password Generation/Comparison Logic
+-   [x] Add Request Authentication Middleware
+-   [x] Add JWT Middleware and Authentication Integration
+-   [ ] Add Swagger/OpenAPI Documentation
+-   [ ] Add Basic Tests
+
 ## Contact
 
 Feel free to find and contact me at the following:

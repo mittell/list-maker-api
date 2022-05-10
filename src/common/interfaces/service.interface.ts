@@ -1,4 +1,4 @@
-export interface CRUD {
+export interface IService {
 	list: (limit: number, page: number) => Promise<any>;
 	getById: (id: string) => Promise<any>;
 	create: (listData: any) => Promise<any>;

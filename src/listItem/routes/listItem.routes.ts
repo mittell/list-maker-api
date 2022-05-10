@@ -1,61 +1,109 @@
-import express from 'express';
-import { RoutesConfig } from '../../common/config/routes.config';
+import { Application, Router } from 'express';
+import env from '../../config/env.config';
 import ListItemController from '../controllers/listItem.controller';
-import ListItemMiddleware from '../middleware/listItem.middleware';
-import ValidationMiddleware from '../../common/middleware/validation.middleware';
+import { extractListItemId } from '../middleware/listItem.middleware';
+import { validateRequest } from '../../common/middleware/validation.middleware';
 import { body } from 'express-validator';
+import { validateJsonWebToken } from '../../common/middleware/jwt.middleware';
 
-export class ListItemRoutes extends RoutesConfig {
-	constructor(app: express.Application) {
-		super(app, 'ListItemRoutes');
-	}
+export function registerListItemRoutes(app: Application) {
+	app.use(`/api/${env.API_VERSION}/listItems`, listItemRoutes());
+}
 
-	configureRoutes() {
-		this.app
-			.route(`/api/v1/listItems`)
-			.get(ListItemController.getListItems) // No need for exposure later...
-			.post(
-				ValidationMiddleware.validate([
-					body('title').exists().notEmpty(),
-					body('description').exists().notEmpty(),
-					body('isComplete')
-						.if(body('isComplete').exists())
-						.isBoolean(),
-					body('listId').exists().notEmpty(), // Will need another middleware to check for valid listId
-				]),
-				ListItemController.createListItem
-			);
+export function listItemRoutes() {
+	const router = Router();
 
-		this.app.param(`listItemId`, ListItemMiddleware.extractListItemId);
-		this.app
-			.route(`/api/v1/listItems/:listItemId`)
-			.get(ListItemController.getListItemById)
-			.put(
-				ValidationMiddleware.validate([
-					body('title').exists().notEmpty(),
-					body('description').exists().notEmpty(),
-					body('isComplete')
-						.if(body('isComplete').exists())
-						.isBoolean(),
-					body('listId').exists().notEmpty(), // Will need another middleware to check for valid listId
-				]),
-				ListItemController.putListItem
-			)
-			.patch(
-				ValidationMiddleware.validate([
-					body('title').if(body('title').exists()).notEmpty(),
-					body('description')
-						.if(body('description').exists())
-						.notEmpty(),
-					body('isComplete')
-						.if(body('isComplete').exists())
-						.isBoolean(),
-					body('listId').if(body('listId').exists()).notEmpty(), // Will need another middleware to check for valid listId
-				]),
-				ListItemController.patchListItem
-			)
-			.delete(ListItemController.removeListItem);
+	// router.get('/', validateJsonWebToken(), ListItemController.getListItems);
 
-		return this.app;
-	}
+	router.post(
+		'/',
+		validateJsonWebToken(),
+		validateRequest(listItemCreateValidators()),
+		ListItemController.createListItem
+	);
+
+	router.get(
+		'/:listItemId',
+		validateJsonWebToken(),
+		extractListItemId,
+		ListItemController.getListItemById
+	);
+
+	router.put(
+		'/:listItemId',
+		validateJsonWebToken(),
+		extractListItemId,
+		validateRequest(listItemPutValidators()),
+		ListItemController.putListItem
+	);
+
+	router.patch(
+		'/:listItemId',
+		validateJsonWebToken(),
+		extractListItemId,
+		validateRequest(listItemPatchValidators()),
+		ListItemController.patchListItem
+	);
+
+	router.delete(
+		'/:listItemId',
+		validateJsonWebToken(),
+		extractListItemId,
+		ListItemController.removeListItem
+	);
+
+	return router;
+}
+
+function listItemCreateValidators() {
+	return [
+		body('title').exists().notEmpty(),
+		body('description').exists().notEmpty(),
+		body('isComplete').if(body('isComplete').exists()).isBoolean(),
+		body('listId').exists().notEmpty(),
+	];
+}
+
+function listItemPutValidators() {
+	return [
+		body('title').exists().notEmpty(),
+		body('description').exists().notEmpty(),
+		body('isComplete').if(body('isComplete').exists()).isBoolean(),
+		body('listId').exists().notEmpty(),
+	];
+}
+
+function listItemPatchValidators() {
+	return [
+		body('title').optional().notEmpty(),
+		body('description').optional().notEmpty(),
+		body('isComplete').optional().isBoolean(),
+		body('listId').optional().notEmpty(),
+		body().custom((_value, { req }) => {
+			let body = req.body;
+			if (
+				(body.constructor === Object &&
+					Object.keys(body).length === 0) ||
+				(Object.keys(body).length === 1 && body['id'] !== undefined)
+			) {
+				throw new Error('Body cannot be empty');
+			}
+
+			return true;
+		}),
+		body().custom((_value, { req }) => {
+			let body = req.body;
+
+			if (
+				body['title'] !== undefined ||
+				body['description'] !== undefined ||
+				body['isComplete'] !== undefined ||
+				body['listId'] !== undefined
+			) {
+				return true;
+			}
+
+			throw new Error('Body does not contain valid data');
+		}),
+	];
 }

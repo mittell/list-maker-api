@@ -1,22 +1,40 @@
+import { MappingError } from '../../common/types/error.type';
+
 export class ListItemToCreateDto {
 	id!: string;
 	title!: string;
 	description!: string;
 	isComplete!: Boolean;
 	listId!: string;
+	userId!: string;
 
-	mapListItemFromRequest(body: any) {
-		this.title = body.title;
-		this.description = body.description;
-		this.isComplete = body.isComplete;
-		this.listId = body.listId;
-	}
+	mapFromRequest(body: any) {
+		let title = body.title;
+		let description = body.description;
+		let isComplete = body.isComplete;
+		let listId = body.listId;
 
-	updateId(id: string) {
-		this.id = id;
-	}
+		if (
+			title === null ||
+			undefined ||
+			'' ||
+			description === null ||
+			undefined ||
+			'' ||
+			isComplete === null ||
+			undefined ||
+			'' ||
+			listId === null ||
+			undefined ||
+			''
+		) {
+			console.log('Unable to map ListItem from Request');
+			throw new MappingError('Unable to map ListItem from Request');
+		}
 
-	getId(): string {
-		return this.id;
+		this.title = title;
+		this.description = description;
+		this.isComplete = isComplete;
+		this.listId = listId;
 	}
 }
