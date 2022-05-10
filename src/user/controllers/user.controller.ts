@@ -135,7 +135,7 @@ class UserController {
 				expiresIn: tokenExpirationInSeconds,
 			});
 			return res
-				.status(201)
+				.status(200)
 				.send({ accessToken: token, refreshToken: hash });
 		} catch (error) {
 			console.log('generateJsonWebToken Error');
