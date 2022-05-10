@@ -14,6 +14,10 @@ class ListItemService implements IService {
 		return ListItemDao.getListItemById(id);
 	}
 
+	async getByIdAndUserId(id: string, userId: string) {
+		return ListItemDao.getListItemByIdAndUserId(id,userId);
+	}
+
 	async create(listItemData: any) {
 		return ListItemDao.addListItem(listItemData);
 	}

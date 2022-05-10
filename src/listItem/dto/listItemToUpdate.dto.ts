@@ -6,6 +6,7 @@ export class ListItemToUpdateDto {
 	description!: string;
 	isComplete!: Boolean;
 	listId!: string;
+	userId!: string;
 
 	mapFromRequest(body: any) {
 		let id = body.id;

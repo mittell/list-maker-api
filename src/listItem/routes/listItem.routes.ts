@@ -13,7 +13,7 @@ export function registerListItemRoutes(app: Application) {
 export function listItemRoutes() {
 	const router = Router();
 
-	router.get('/', validateJsonWebToken(), ListItemController.getListItems);
+	// router.get('/', validateJsonWebToken(), ListItemController.getListItems);
 
 	router.post(
 		'/',
