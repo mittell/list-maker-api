@@ -21,7 +21,7 @@ export function listRoutes() {
 		'/',
 		validateJsonWebToken(),
 		extractPageLimit,
-		ListController.getLists
+		ListController.getListsByUserId
 	);
 
 	router.post(
@@ -69,7 +69,6 @@ function listCreateValidators() {
 	return [
 		body('title').exists().notEmpty(),
 		body('description').exists().notEmpty(),
-		body('userId').exists().notEmpty(),
 	];
 }
 
@@ -77,7 +76,6 @@ function listPutValidators() {
 	return [
 		body('title').exists().notEmpty(),
 		body('description').exists().notEmpty(),
-		body('userId').exists().notEmpty(),
 	];
 }
 
@@ -85,7 +83,6 @@ function listPatchValidators() {
 	return [
 		body('title').optional().notEmpty(),
 		body('description').optional().notEmpty(),
-		body('userId').optional().notEmpty(),
 		body().custom((_value, { req }) => {
 			let body = req.body;
 			if (
@@ -103,8 +100,7 @@ function listPatchValidators() {
 
 			if (
 				body['title'] !== undefined ||
-				body['description'] !== undefined ||
-				body['userId'] !== undefined
+				body['description'] !== undefined
 			) {
 				return true;
 			}

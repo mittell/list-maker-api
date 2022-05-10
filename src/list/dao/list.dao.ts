@@ -34,8 +34,19 @@ class ListDao {
 			.exec();
 	}
 
+	async getListsByUserId(limit: number, page: number, userId: string) {
+		return this.ListModel.find({ userId: userId })
+			.limit(limit)
+			.skip(limit * page)
+			.exec();
+	}
+
 	async getListById(listId: string) {
 		return this.ListModel.findOne({ _id: listId }).exec();
+	}
+
+	async getListByIdAndUserId(listId: string, userId: string) {
+		return this.ListModel.findOne({ _id: listId, userId: userId }).exec();
 	}
 
 	async addList(listData: any) {
@@ -50,7 +61,7 @@ class ListDao {
 
 	async updateListById(listId: string, listData: any) {
 		return this.ListModel.findOneAndUpdate(
-			{ _id: listId },
+			{ _id: listId, userId: listData.userId },
 			{ $set: listData },
 			{ new: true }
 		).exec();

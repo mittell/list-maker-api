@@ -6,8 +6,16 @@ class ListService implements IService {
 		return ListDao.getLists(limit, page);
 	}
 
+	async listByUserId(limit: number, page: number, userId: string) {
+		return ListDao.getListsByUserId(limit, page, userId);
+	}
+
 	async getById(id: string) {
 		return ListDao.getListById(id);
+	}
+
+	async getByIdAndUserId(id: string, userId: string) {
+		return ListDao.getListByIdAndUserId(id, userId);
 	}
 
 	async create(listData: any) {
