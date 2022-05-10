@@ -66,6 +66,10 @@ Run and debug the application with the dev script:
 
     npm run dev
 
+Run tests on the application with the test script:
+
+    npm run test
+
 Build and run the compiled version with the build and start scripts:
 
     npm run build
@@ -89,8 +93,8 @@ Build and run the compiled version with the build and start scripts:
 -   [x] Add User Password Generation/Comparison Logic
 -   [x] Add Request Authentication Middleware
 -   [x] Add JWT Middleware and Authentication Integration
+-   [x] Add Basic Tests
 -   [ ] Add Swagger/OpenAPI Documentation
--   [ ] Add Basic Tests
 
 ## Contact
 
