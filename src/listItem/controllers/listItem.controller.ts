@@ -25,8 +25,9 @@ class ListItemController {
 
 	async getListItemById(req: Request, res: Response, next: NextFunction) {
 		let listItemId = req.body.id;
+		let userId = req.body.jwt.userId;
 
-		await ListItemService.getById(listItemId)
+		await ListItemService.getByIdAndUserId(listItemId, userId)
 			.then((existingListItem) => {
 				if (!existingListItem) {
 					next(new NotFoundError());
@@ -45,11 +46,11 @@ class ListItemController {
 	}
 
 	async createListItem(req: Request, res: Response, next: NextFunction) {
-		// TODO - Check existing ListId is valid here...
-
+		let userId = req.body.jwt.userId;
 		let listItemToCreate: ListItemToCreateDto = new ListItemToCreateDto();
 
 		listItemToCreate.mapFromRequest(req.body);
+		listItemToCreate.userId = userId;
 
 		await ListItemService.create(req.body)
 			.then((id) => {
@@ -62,14 +63,17 @@ class ListItemController {
 	}
 
 	async patchListItem(req: Request, res: Response, next: NextFunction) {
-		// TODO - Check existing ListId is valid here...
-
+		let userId = req.body.jwt.userId;
 		let listItemToUpdate: ListItemToUpdateDto = new ListItemToUpdateDto();
 
 		listItemToUpdate.mapFromRequest(req.body);
+		listItemToUpdate.userId = userId;
 
 		await ListItemService.patchById(listItemToUpdate)
-			.then(() => {
+			.then((existingListItem) => {
+				if (!existingListItem) {
+					next(new NotFoundError());
+				}
 				res.status(202).send();
 			})
 			.catch((error) => {
@@ -78,14 +82,17 @@ class ListItemController {
 	}
 
 	async putListItem(req: Request, res: Response, next: NextFunction) {
-		// TODO - Check existing ListId is valid here...
-
+		let userId = req.body.jwt.userId;
 		let listItemToUpdate: ListItemToUpdateDto = new ListItemToUpdateDto();
 
 		listItemToUpdate.mapFromRequest(req.body);
+		listItemToUpdate.userId = userId;
 
 		await ListItemService.putById(listItemToUpdate)
-			.then(() => {
+			.then((existingListItem) => {
+				if (!existingListItem) {
+					next(new NotFoundError());
+				}
 				res.status(202).send();
 			})
 			.catch((error) => {
@@ -95,8 +102,9 @@ class ListItemController {
 
 	async removeListItem(req: Request, res: Response, next: NextFunction) {
 		let listItemId = req.body.id;
+		let userId = req.body.jwt.userId;
 
-		await ListItemService.getById(listItemId)
+		await ListItemService.getByIdAndUserId(listItemId, userId)
 			.then(async (existingListItem) => {
 				if (!existingListItem) {
 					next(new NotFoundError());

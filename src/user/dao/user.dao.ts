@@ -56,6 +56,10 @@ class UserDao {
 	async removeUserById(userId: string) {
 		return this.UserModel.deleteOne({ _id: userId }).exec();
 	}
+
+	async getUserByEmailWithPassword(email: string) {
+		return this.UserModel.findOne({ email: email }).exec();
+	}
 }
 
 export default new UserDao();

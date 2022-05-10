@@ -4,6 +4,7 @@ interface ENV {
 	NODE_ENV: string | undefined;
 	MONGO_URL: string | undefined;
 	API_VERSION: string | undefined;
+	JWT_SECRET: string | undefined;
 }
 
 interface Config {
@@ -12,6 +13,7 @@ interface Config {
 	NODE_ENV: string;
 	MONGO_URL: string;
 	API_VERSION: string;
+	JWT_SECRET: string;
 }
 
 const getConfig = (): ENV => {
@@ -23,6 +25,7 @@ const getConfig = (): ENV => {
 		API_VERSION: process.env.API_VERSION
 			? process.env.API_VERSION
 			: undefined,
+		JWT_SECRET: process.env.JWT_SECRET ? process.env.JWT_SECRET : undefined,
 	};
 };
 

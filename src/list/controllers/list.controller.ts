@@ -7,12 +7,13 @@ import { ListToUpdateDto } from '../dto/listToUpdate.dto';
 import { NotFoundError } from '../../common/types/error.type';
 
 class ListController {
-	async getLists(req: Request, res: Response, next: NextFunction) {
+	async getListsByUserId(req: Request, res: Response, next: NextFunction) {
 		// TODO - Need a better way to validate and sanitise this...
 		let page: number = isNaN(req.body.page) ? 0 : req.body.page;
 		let limit: number = isNaN(req.body.limit) ? 10 : req.body.limit;
+		let userId = req.body.jwt.userId;
 
-		await ListService.list(limit, page)
+		await ListService.listByUserId(limit, page, userId)
 			.then((lists) => {
 				let listsToReturn: ListToReturnDto[] = [];
 				lists.forEach((list) => {
@@ -28,11 +29,12 @@ class ListController {
 	}
 
 	async getListById(req: Request, res: Response, next: NextFunction) {
-		let listId = req.body.id;
 		// TODO - Need a better way to validate and sanitise this...
+		let listId = req.body.id;
 		let getListItems = req.body.listItems;
+		let userId = req.body.jwt.userId;
 
-		await ListService.getById(listId)
+		await ListService.getByIdAndUserId(listId, userId)
 			.then(async (existingList) => {
 				if (!existingList) {
 					next(new NotFoundError());
@@ -58,11 +60,11 @@ class ListController {
 	}
 
 	async createList(req: Request, res: Response, next: NextFunction) {
-		// TODO - Check existing UserId is valid here...
-
+		let userId = req.body.jwt.userId;
 		let listToCreate: ListToCreateDto = new ListToCreateDto();
 
 		listToCreate.mapFromRequest(req.body);
+		listToCreate.userId = userId;
 
 		await ListService.create(listToCreate)
 			.then((id) => {
@@ -75,14 +77,17 @@ class ListController {
 	}
 
 	async patchList(req: Request, res: Response, next: NextFunction) {
-		// TODO - Check existing UserId is valid here...
-
+		let userId = req.body.jwt.userId;
 		let listToUpdate: ListToUpdateDto = new ListToUpdateDto();
 
 		listToUpdate.mapFromRequest(req.body);
+		listToUpdate.userId = userId;
 
 		await ListService.patchById(listToUpdate)
-			.then(() => {
+			.then((existingList) => {
+				if (!existingList) {
+					next(new NotFoundError());
+				}
 				res.status(204).send();
 			})
 			.catch((error) => {
@@ -91,14 +96,17 @@ class ListController {
 	}
 
 	async putList(req: Request, res: Response, next: NextFunction) {
-		// TODO - Check existing UserId is valid here...
-		
+		let userId = req.body.jwt.userId;
 		let listToUpdate: ListToUpdateDto = new ListToUpdateDto();
 
 		listToUpdate.mapFromRequest(req.body);
+		listToUpdate.userId = userId;
 
 		await ListService.putById(listToUpdate)
-			.then(() => {
+			.then((existingList) => {
+				if (!existingList) {
+					next(new NotFoundError());
+				}
 				res.status(204).send();
 			})
 			.catch((error) => {
@@ -108,8 +116,9 @@ class ListController {
 
 	async removeList(req: Request, res: Response, next: NextFunction) {
 		let listId = req.body.id;
+		let userId = req.body.jwt.userId;
 
-		await ListService.getById(listId)
+		await ListService.getByIdAndUserId(listId, userId)
 			.then(async (existingList) => {
 				if (!existingList) {
 					next(new NotFoundError());

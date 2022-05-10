@@ -23,6 +23,9 @@ class ListItem {
 
 	@prop({ type: () => String, required: true })
 	public listId!: string;
+
+	@prop({ type: () => String, required: true })
+	public userId!: string;
 }
 
 class ListItemDao {
@@ -34,12 +37,30 @@ class ListItemDao {
 		return this.ListItemModel.find().exec();
 	}
 
+	async getListItemsByUserId(userId: string) {
+		return this.ListItemModel.find({ userId: userId }).exec();
+	}
+
 	async getListItemsByListId(listId: string) {
 		return this.ListItemModel.find({ listId: listId }).exec();
 	}
 
+	async getListItemsByListIdAndUserId(listId: string, userId: string) {
+		return this.ListItemModel.find({
+			listId: listId,
+			userId: userId,
+		}).exec();
+	}
+
 	async getListItemById(listItemId: string) {
 		return this.ListItemModel.findOne({ _id: listItemId }).exec();
+	}
+
+	async getListItemByIdAndUserId(listItemId: string, userId: string) {
+		return this.ListItemModel.findOne({
+			_id: listItemId,
+			userId: userId,
+		}).exec();
 	}
 
 	async addListItem(listItemData: any) {
@@ -54,7 +75,7 @@ class ListItemDao {
 
 	async updateListItemById(listItemId: string, listItemData: any) {
 		return this.ListItemModel.findOneAndUpdate(
-			{ _id: listItemId },
+			{ _id: listItemId, userId: listItemData.userId },
 			{ $set: listItemData },
 			{ new: true }
 		).exec();

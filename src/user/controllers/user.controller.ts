@@ -4,6 +4,10 @@ import { UserToCreateDto } from '../dto/userToCreate.dto';
 import { UserToReturnDto } from '../dto/userToReturn.dto';
 import { UserToUpdateDto } from '../dto/userToUpdate.dto';
 import UserService from '../services/user.service';
+import argon2 from 'argon2';
+import { env } from 'process';
+import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
 
 class UserController {
 	async getUsers(_req: Request, res: Response, next: NextFunction) {
@@ -23,7 +27,7 @@ class UserController {
 	}
 
 	async getUserById(req: Request, res: Response, next: NextFunction) {
-		let userId = req.body.id;
+		let userId = req.body.jwt.userId;
 
 		await UserService.getById(userId)
 			.then((existingUser) => {
@@ -46,9 +50,9 @@ class UserController {
 
 		userToCreate.mapFromRequest(req.body);
 
-		// TODO - Password generation and hashing needed to happen here!!!
+		userToCreate.password = await argon2.hash(userToCreate.password);
 
-		await UserService.create(req.body)
+		await UserService.create(userToCreate)
 			.then((id) => {
 				userToCreate.id = id;
 				res.status(201).send({ id: userToCreate.id });
@@ -63,7 +67,9 @@ class UserController {
 
 		userToUpdate.mapFromRequest(req.body);
 
-		// TODO - Password hashing needed to happen here!!!
+		if (req.body.password) {
+			userToUpdate.password = await argon2.hash(userToUpdate.password);
+		}
 
 		await UserService.patchById(userToUpdate)
 			.then(() => {
@@ -79,7 +85,7 @@ class UserController {
 
 		userToUpdate.mapFromRequest(req.body);
 
-		// TODO - Password hashing needed to happen here!!!
+		userToUpdate.password = await argon2.hash(userToUpdate.password);
 
 		await UserService.putById(userToUpdate)
 			.then(() => {
@@ -91,7 +97,7 @@ class UserController {
 	}
 
 	async removeUser(req: Request, res: Response, next: NextFunction) {
-		let userId = req.body.id;
+		let userId = req.body.jwt.userId;
 
 		await UserService.getById(userId)
 			.then(async (existingUser) => {
@@ -107,6 +113,34 @@ class UserController {
 			.catch((error) => {
 				next(error);
 			});
+	}
+
+	//@ts-expect-error
+	async generateJsonWebToken(
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) {
+		const tokenExpirationInSeconds = 36000;
+		try {
+			const refreshId = req.body.userId + env.JWT_SECRET;
+			const salt = crypto.createSecretKey(crypto.randomBytes(16));
+			const hash = crypto
+				.createHmac('sha512', salt)
+				.update(refreshId)
+				.digest('base64');
+			req.body.refreshKey = salt.export();
+			//@ts-ignore
+			const token = jwt.sign(req.body, env.JWT_SECRET, {
+				expiresIn: tokenExpirationInSeconds,
+			});
+			return res
+				.status(201)
+				.send({ accessToken: token, refreshToken: hash });
+		} catch (error) {
+			console.log('generateJsonWebToken Error');
+			next(error);
+		}
 	}
 }
 

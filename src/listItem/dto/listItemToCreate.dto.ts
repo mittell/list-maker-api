@@ -6,6 +6,7 @@ export class ListItemToCreateDto {
 	description!: string;
 	isComplete!: Boolean;
 	listId!: string;
+	userId!: string;
 
 	mapFromRequest(body: any) {
 		let title = body.title;
