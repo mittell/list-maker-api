@@ -41,7 +41,6 @@ describe('user endpoints', function () {
 	let request: supertest.SuperAgentTest;
 
 	let accessToken = '';
-	//@ts-ignore
 	let refreshToken = '';
 
 	let dummyUser = {
