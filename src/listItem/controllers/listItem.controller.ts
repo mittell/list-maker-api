@@ -4,6 +4,7 @@ import { ListItemToCreateDto } from '../dto/listItemToCreate.dto';
 import { ListItemToReturnDto } from '../dto/listItemToReturn.dto';
 import { ListItemToUpdateDto } from '../dto/listItemToUpdate.dto';
 import ListItemService from '../services/listItem.service';
+import ListService from '../../list/services/list.service';
 
 class ListItemController {
 	async getListItems(_req: Request, res: Response, next: NextFunction) {
@@ -52,10 +53,20 @@ class ListItemController {
 		listItemToCreate.mapFromRequest(req.body);
 		listItemToCreate.userId = userId;
 
-		await ListItemService.create(req.body)
-			.then((id) => {
-				listItemToCreate.id = id;
-				res.status(201).send({ id: listItemToCreate.id });
+		await ListService.getByIdAndUserId(listItemToCreate.listId, userId)
+			.then(async (existingList) => {
+				if (!existingList) {
+					next(new NotFoundError());
+				} else {
+					await ListItemService.create(listItemToCreate)
+						.then((id) => {
+							listItemToCreate.id = id;
+							res.status(201).send({ id: listItemToCreate.id });
+						})
+						.catch((error) => {
+							next(error);
+						});
+				}
 			})
 			.catch((error) => {
 				next(error);
