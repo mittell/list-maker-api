@@ -20,7 +20,7 @@ export function verifyUserPassword() {
 			}
 		}
 
-		next(new UnauthenticatedError());
+		return next(new UnauthenticatedError());
 	};
 }
 
@@ -32,6 +32,6 @@ export function verifyUserRequest() {
 			return next();
 		}
 
-		next(new UnauthenticatedError());
+		return next(new UnauthenticatedError());
 	};
 }
