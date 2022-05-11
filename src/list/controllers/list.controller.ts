@@ -38,21 +38,23 @@ class ListController {
 			.then(async (existingList) => {
 				if (!existingList) {
 					next(new NotFoundError());
+				} else {
+					let listToReturn: ListToReturnDto = new ListToReturnDto();
+
+					listToReturn.mapFromDocument(existingList);
+
+					if (existingList && getListItems) {
+						await ListItemService.listByListId(listId).then(
+							(listItems) => {
+								listToReturn.mapListItemsFromDocument(
+									listItems
+								);
+							}
+						);
+					}
+
+					res.status(200).send(listToReturn);
 				}
-
-				let listToReturn: ListToReturnDto = new ListToReturnDto();
-
-				listToReturn.mapFromDocument(existingList);
-
-				if (existingList && getListItems) {
-					await ListItemService.listByListId(listId).then(
-						(listItems) => {
-							listToReturn.mapListItemsFromDocument(listItems);
-						}
-					);
-				}
-
-				res.status(200).send(listToReturn);
 			})
 			.catch((error) => {
 				next(error);
@@ -87,8 +89,9 @@ class ListController {
 			.then((existingList) => {
 				if (!existingList) {
 					next(new NotFoundError());
+				} else {
+					res.status(204).send();
 				}
-				res.status(204).send();
 			})
 			.catch((error) => {
 				next(error);
@@ -106,8 +109,9 @@ class ListController {
 			.then((existingList) => {
 				if (!existingList) {
 					next(new NotFoundError());
+				} else {
+					res.status(204).send();
 				}
-				res.status(204).send();
 			})
 			.catch((error) => {
 				next(error);
@@ -122,12 +126,11 @@ class ListController {
 			.then(async (existingList) => {
 				if (!existingList) {
 					next(new NotFoundError());
+				} else {
+					await ListService.deleteById(existingList._id).then(() => {
+						res.status(204).send();
+					});
 				}
-
-				//@ts-expect-error
-				await ListService.deleteById(existingList._id).then(() => {
-					res.status(204).send();
-				});
 			})
 			.catch((error) => {
 				next(error);
