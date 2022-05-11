@@ -28,7 +28,7 @@ export function handleErrors(
 	error: any,
 	_req: Request,
 	res: Response,
-	next: NextFunction
+	_next: NextFunction
 ) {
 	if (env.NODE_ENV === ProcessEnv.DEV) {
 		Sentry.captureException(error);
@@ -111,6 +111,4 @@ export function handleErrors(
 			...(env.NODE_ENV === ProcessEnv.DEV ? { error } : {}),
 		});
 	}
-
-	next();
 }

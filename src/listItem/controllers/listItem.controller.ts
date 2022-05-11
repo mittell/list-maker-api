@@ -31,14 +31,14 @@ class ListItemController {
 			.then((existingListItem) => {
 				if (!existingListItem) {
 					next(new NotFoundError());
+				} else {
+					let listItemToReturn: ListItemToReturnDto =
+						new ListItemToReturnDto();
+
+					listItemToReturn.mapFromDocument(existingListItem);
+
+					res.status(200).send(listItemToReturn);
 				}
-
-				let listItemToReturn: ListItemToReturnDto =
-					new ListItemToReturnDto();
-
-				listItemToReturn.mapFromDocument(existingListItem);
-
-				res.status(200).send(listItemToReturn);
 			})
 			.catch((error) => {
 				next(error);
@@ -73,8 +73,9 @@ class ListItemController {
 			.then((existingListItem) => {
 				if (!existingListItem) {
 					next(new NotFoundError());
+				} else {
+					res.status(202).send();
 				}
-				res.status(202).send();
 			})
 			.catch((error) => {
 				next(error);
@@ -92,8 +93,9 @@ class ListItemController {
 			.then((existingListItem) => {
 				if (!existingListItem) {
 					next(new NotFoundError());
+				} else {
+					res.status(202).send();
 				}
-				res.status(202).send();
 			})
 			.catch((error) => {
 				next(error);
@@ -108,14 +110,13 @@ class ListItemController {
 			.then(async (existingListItem) => {
 				if (!existingListItem) {
 					next(new NotFoundError());
+				} else {
+					await ListItemService.deleteById(existingListItem._id).then(
+						() => {
+							res.status(204).send();
+						}
+					);
 				}
-
-				//@ts-expect-error
-				await ListItemService.deleteById(existingListItem._id).then(
-					() => {
-						res.status(204).send();
-					}
-				);
 			})
 			.catch((error) => {
 				next(error);

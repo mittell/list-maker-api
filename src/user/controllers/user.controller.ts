@@ -33,12 +33,12 @@ class UserController {
 			.then((existingUser) => {
 				if (!existingUser) {
 					next(new NotFoundError());
+				} else {
+					let userToReturn: UserToReturnDto = new UserToReturnDto();
+					userToReturn.mapFromDocument(existingUser);
+
+					res.status(200).send(userToReturn);
 				}
-
-				let userToReturn: UserToReturnDto = new UserToReturnDto();
-				userToReturn.mapFromDocument(existingUser);
-
-				res.status(200).send(userToReturn);
 			})
 			.catch((error) => {
 				next(error);
@@ -103,12 +103,11 @@ class UserController {
 			.then(async (existingUser) => {
 				if (!existingUser) {
 					next(new NotFoundError());
+				} else {
+					await UserService.deleteById(existingUser._id).then(() => {
+						res.status(204).send();
+					});
 				}
-
-				//@ts-expect-error
-				await UserService.deleteById(existingUser._id).then(() => {
-					res.status(204).send();
-				});
 			})
 			.catch((error) => {
 				next(error);
