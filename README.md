@@ -1,10 +1,6 @@
-<div align="center">
-
 # List Maker API
 
-A Node based API for a simple List Maker Web App. **_(Link Coming Soon!)_**
-
-</div>
+A Node based API for a simple List Maker Web App.
 
 <div align="center">
   
@@ -15,19 +11,22 @@ A Node based API for a simple List Maker Web App. **_(Link Coming Soon!)_**
 | Libraries.io Dependency Status | ![Libraries.io Dependency Status](https://img.shields.io/librariesio/github/mittell/list-maker-api?style=for-the-badge) | ![Libraries.io Dependency Status](https://img.shields.io/librariesio/github/mittell/list-maker-api?style=for-the-badge)
 | GitHub Monthly Commits | ![GitHub Commits Current Month](https://img.shields.io/github/commit-activity/m/mittell/list-maker-api/main?style=for-the-badge) | ![GitHub Commits Current Month](https://img.shields.io/github/commit-activity/m/mittell/list-maker-api/dev?style=for-the-badge)
 | GitHub Last Commit | ![GitHub Last Commit](https://img.shields.io/github/last-commit/mittell/list-maker-api/main?style=for-the-badge) | ![GitHub Last Commit](https://img.shields.io/github/last-commit/mittell/list-maker-api/dev?style=for-the-badge)
-| Uptime Robot Status | ![Uptime Robot Status](https://img.shields.io/uptimerobot/status/m791536380-eec0a09b56acf8692734c5f4?style=for-the-badge) | ![Uptime Robot Status](https://img.shields.io/uptimerobot/status/m791502394-4d51bc3f23871b2ec5cc2329?style=for-the-badge) |
 
 </div>
 
 ## About
 
-A companion server-side application to my List Maker App. **_(Link Coming Soon!)_**
+My first attempt at building an API with Node/Express and TypeScript.
 
-Built using Node and TypeScript, integrating Clean Architecture ideas, and services for Code Analysis, Commit Linting, Error Logging, CI/CD, and Cloud Hosting.
+This API was made as a proof-of-concept for a simple List Maker App idea.
+
+The main goal of this project was to have a working API running through CircleCI for testing and building, along with Heroku for deployment.
+
+SonarCloud was integrated to provide code analysis.
 
 ## Technologies
 
-The List Maker API is currently being built and deployed with the following technologies:
+The List Maker API was built and deployed with the following technologies:
 
 -   [Node.js](https://nodejs.org/)
 -   [Express](https://expressjs.com/)
@@ -75,26 +74,9 @@ Build and run the compiled version with the build and start scripts:
     npm run build
     npm run start
 
-## Roadmap
+## Development Status
 
--   [x] Setup Basic API with linting for TypeScript and commit messages
--   [x] Setup CI/CD with CircleCI and Heroku
--   [x] Integrate SonarCloud and commitlint into CI/CD process
--   [x] Integrate Sentry
--   [x] Setup MongoDB and Mongoose
--   [x] Create List Interface, DAO, Service, Controller, and Routing
--   [x] Create ListItem Interface, DAO, Service, Controller, and Routing
--   [x] Add Global Error Handling
--   [x] Update Controller Request/Response structure
--   [x] Create User Interface, DAO, Service, Controller, and Routing
--   [x] Add Request Data Validation Middleware
--   [x] Add Request/Response DTOs
--   [x] Review/Refactor/Optimise
--   [x] Add User Password Generation/Comparison Logic
--   [x] Add Request Authentication Middleware
--   [x] Add JWT Middleware and Authentication Integration
--   [x] Add Basic Tests
--   [ ] Add Swagger/OpenAPI Documentation
+Development on this project has stopped, another one using Inversify for Dependency Injection was started. - [List Maker API v2](https://github.com/mittell/list-maker-api-v2)
 
 ## Contact
 
